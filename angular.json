@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/dvp",
+            "outputPath": "dist/experiment1-tue",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -71,18 +71,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "dvp:build"
+            "browserTarget": "experiment1-tue:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dvp:build:production"
+              "browserTarget": "experiment1-tue:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dvp:build"
+            "browserTarget": "experiment1-tue:build"
           }
         },
         "test": {
@@ -122,16 +122,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "dvp:serve"
+            "devServerTarget": "experiment1-tue:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dvp:serve:production"
+              "devServerTarget": "experiment1-tue:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "dvp"
+  "defaultProject": "experiment1-tue"
 }
