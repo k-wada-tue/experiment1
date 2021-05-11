@@ -1,0 +1,306 @@
+@font-face {
+  font-family: 'sangbleu_republicbold';
+  src: url('fonts/sangbleurepublic-bold-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-b: 'sangbleu_republicbold';
+
+@font-face {
+  font-family: 'sangbleu_republicbold_italic';
+  src: url('fonts/sangbleurepublic-bolditalic-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-bolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-bi: 'sangbleu_republicbold_italic';
+
+@font-face {
+  font-family: 'sangbleu_republicbook';
+  src: url('fonts/sangbleurepublic-book-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-book-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-book: 'sangbleu_republicbook';
+
+@font-face {
+  font-family: 'sangbleu_republicbook_italic';
+  src: url('fonts/sangbleurepublic-bookitalic-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-bookitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-booki: 'sangbleu_republicbook_italic';
+
+@font-face {
+  font-family: 'sangbleu_republicmedium';
+  src: url('fonts/sangbleurepublic-medium-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-medium-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-m: 'sangbleu_republicmedium';
+
+@font-face {
+  font-family: 'sangbleu_republicMdIt';
+  src: url('fonts/sangbleurepublic-mediumitalic-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-mediumitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-mi: 'sangbleu_republicMdIt';
+
+@font-face {
+  font-family: 'sangbleu_republicregular';
+  src: url('fonts/sangbleurepublic-regular-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-r: 'sangbleu_republicregular';
+
+@font-face {
+  font-family: 'sangbleu_republicRgIt';
+  src: url('fonts/sangbleurepublic-regularitalic-webfont.woff2') format('woff2'),
+       url('fonts/sangbleurepublic-regularitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$serif-i: 'sangbleu_republicRgIt';
+
+
+/* Suisse Sign */
+
+@font-face {
+  font-family: 'suisse_signbold';
+  src: url('fonts/suissesign-bold-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-b: 'suisse_signbold';
+
+@font-face {
+  font-family: 'suisse_signbold_italic';
+  src: url('fonts/suissesign-bolditalic-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-bolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-bi: 'suisse_signbold_italic';
+
+@font-face {
+  font-family: 'suisse_signregular';
+  src: url('fonts/suissesign-regular-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-r: 'suisse_signregular';
+
+@font-face {
+  font-family: 'suisse_signitalic';
+  src: url('fonts/suissesign-regularitalic-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-regularitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-i: 'suisse_signitalic';
+
+@font-face {
+  font-family: 'suisse_signsemi_bold';
+  src: url('fonts/suissesign-semibold-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-semibold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-semb: 'suisse_signsemi_bold';
+
+@font-face {
+  font-family: 'suisse_signsemi_bold_italic';
+  src: url('fonts/suissesign-semibolditalic-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-semibolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-sembi: 'suisse_signsemi_bold_italic';
+
+@font-face {
+  font-family: 'suisse_signthin';
+  src: url('fonts/suissesign-thin-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-thin-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-thin: 'suisse_signthin';
+
+@font-face {
+  font-family: 'suisse_signthin_italic';
+  src: url('fonts/suissesign-thinitalic-webfont.woff2') format('woff2'),
+       url('fonts/suissesign-thinitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sansDisp-thini: 'suisse_signthin_italic';
+
+
+/* Suisseintl */
+
+@font-face {
+  font-family: 'suisse_intlthin';
+  src: url('fonts/suisseintl-thin-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-thin-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-thin: 'suisse_intlthin';
+
+
+@font-face {
+  font-family: 'suisse_intlthin_italic';
+  src: url('fonts/suisseintl-thinitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-thinitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-thini: 'suisse_intlthin_italic';
+
+@font-face {
+  font-family: 'suisse_intllight';
+  src: url('fonts/suisseintl-light-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-l: 'suisse_intllight';
+
+@font-face {
+  font-family: 'suisse_intllight_italic';
+  src: url('fonts/suisseintl-lightitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-lightitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-li: 'suisse_intllight_italic';
+
+@font-face {
+  font-family: 'suisse_intlregular';
+  src: url('fonts/suisseintl-regular-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-r: 'suisse_intlregular';
+
+@font-face {
+  font-family: 'suisse_intlitalic';
+  src: url('fonts/suisseintl-regularitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-regularitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-i: 'suisse_intlitalic';
+
+@font-face {
+  font-family: 'suisse_intlmedium';
+  src: url('fonts/suisseintl-medium-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-medium-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-m: 'suisse_intlmedium';
+
+@font-face {
+  font-family: 'suisse_intlmedium_italic';
+  src: url('fonts/suisseintl-mediumitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-mediumitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-mi: 'suisse_intlmedium_italic';
+
+@font-face {
+  font-family: 'suisse_intlbold';
+  src: url('fonts/suisseintl-bold-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-b: 'suisse_intlbold';
+
+@font-face {
+  font-family: 'suisse_intlbold_italic';
+  src: url('fonts/suisseintl-bolditalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-bolditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-bi: 'suisse_intlbold_italic';
+
+@font-face {
+  font-family: 'suisse_intlblack';
+  src: url('fonts/suisseintl-black-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-black-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-blk: 'suisse_intlblack';
+
+@font-face {
+  font-family: 'suisse_intlblack_italic';
+  src: url('fonts/suisseintl-blackitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintl-blackitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-blki: 'suisse_intlblack_italic';
+
+@font-face {
+  font-family: 'suisse_intl_condensedregular';
+  src: url('fonts/suisseintlcond-regular-webfont.woff2') format('woff2'),
+       url('fonts/suisseintlcond-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-con: 'suisse_intl_condensedregular';
+
+@font-face {
+  font-family: 'suisse_intl_condenseditalic';
+  src: url('fonts/suisseintlcond-regularitalic-webfont.woff2') format('woff2'),
+       url('fonts/suisseintlcond-regularitalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-coni: 'suisse_intl_condenseditalic';

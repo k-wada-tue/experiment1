@@ -1,0 +1,10 @@
+@import '../../../../utility.scss';
+
+#map-container {
+  width: 100%;
+  // height: calc(100% - 72px);
+  height: 100%;
+  background: #d4d4d4;
+  border: 1px solid #ccc;
+}
+

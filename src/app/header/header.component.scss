@@ -1,0 +1,86 @@
+@import '../../utility.scss';
+
+.header {
+  height: 64px;
+  background: $dav-navy;
+  width: 100%;
+  display: block !important;
+  &_inner {
+    @include inner;
+    &_left {
+      float: left;
+      display: flex;
+      align-items: center;
+      height: inherit;
+      .data-title {
+        font-family: 'suisse_signsemi_bold';
+        color: #fff;
+        font-size: 24px;
+      }
+      .nav-logo1 {
+        color: #d4d4d4;
+        font-size:24px;
+        margin-left: 12px;
+      }
+      .nav-logo2 {
+        color: #d4d4d4;
+        font-size: 24px;
+        margin-left: -12px;
+      }
+    }
+    // &_right {
+    //   float: right;
+    //   height: inherit;
+    //   &_shareIst {
+    //     display: flex;
+    //     align-items: center;
+    //     height: inherit;
+    //       color: #d4d4d4;
+    //       .shareIst-txt {
+    //         font-size: 16px;
+    //         margin-top: 3px;
+    //         @include transition(color, 600ms, ease-out);
+    //         color: #d4d4d4;
+    //         &:hover {
+    //           cursor: pointer;
+    //           @include transition(color, 600ms, ease-out);
+    //           color: $dav-gold;
+    //         }
+    //       }
+    //       .shareIst-sep {
+    //         height: 32px;
+    //         border-left: 1px solid #fff;
+    //         margin: 0 12px 0 12px;
+    //       }
+    //       .shareIst-wrapper {
+    //         display: flex;
+    //         align-items: center;
+    //         &:hover {
+    //           .shareIst-logo, .shareIst-num {
+    //             cursor: pointer;
+    //             @include transition(color, 600ms, ease-out);
+    //             color: $dav-gold;
+    //           }
+    //         }
+    //         .shareIst-logo {
+    //           font-size: 24px;
+    //           @include transition(color, 600ms, ease-out);
+    //           color: #d4d4d4;
+    //         }
+    //         .shareIst-num {
+    //           font-size: 20px;
+    //           margin-left: 6px;
+    //           margin-top: 5px;
+    //           @include transition(color, 600ms, ease-out);
+    //           color: #d4d4d4;
+    //         }
+    //       }
+    //   }
+    // }
+  }
+}
+
+.header-wrapper {
+  width: 100%;
+  height: inherit;
+}

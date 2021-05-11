@@ -1,0 +1,28 @@
+
+<mat-accordion class="base-data">
+  <mat-expansion-panel [expanded]="true">
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="public-icon">public</mat-icon>
+        <span class="base-data-title">Base Boundary Data</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="base-data-content">
+      <mat-radio-group name="bourndary">
+        <mat-radio-button class="boundary-option" value="district" (change)="boundarySelected($event.value)">District (Wijken)</mat-radio-button>
+        <mat-radio-button class="boundary-option" value="neighborhood" checked="true" (change)="boundarySelected($event.value)">Neighborhood (Buurten)</mat-radio-button>
+      </mat-radio-group>
+      <mat-form-field appearance="fill">
+        <mat-label>Base Data</mat-label>
+        <mat-select (selectionChange)="onBookChange($event.value)">
+          <mat-option *ngFor="let dataset of datasets" [value]="dataset.value">
+            {{dataset.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </mat-expansion-panel>
+</mat-accordion>

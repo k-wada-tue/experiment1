@@ -1,0 +1,28 @@
+@import '../../utility.scss';
+
+.content {
+  height: calc(100vh - 96px);
+  background: #f2f2f2;
+  &_inner {
+    @include inner(0 24px 0 24px);
+    display: flex;
+    align-items: center;
+    height: inherit;
+    &_left {
+      width: calc(68% - 12px);
+      margin-right: 12px;
+      height: 100%;
+    }
+    &_right {
+      width: 32%;
+      height: 100%;
+      content-right {
+        height: 100%;
+        display: block;
+        padding: 24px 0 24px 12px;
+        box-sizing:border-box;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,76 @@
+@import '../../../../utility.scss';
+
+.annotation-container {
+  width: 100%;
+  height: 40px;
+  background: #fff;
+  padding: 6px 4px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  &_switch {
+    display: flex;
+    align-items: center;
+    width: auto;
+    border-right: 1px solid #666;
+    padding-right: 12px;
+    mat-icon {
+      line-height: 28px;
+      height: 28px;
+    }
+    .annotation-icon {
+      color: #666;
+    }
+    .annotation-txt {
+      margin: 3px 12px 0 4px;
+    }
+    .annotation-switch {
+      @include transition(color, 600ms, ease-out);
+      color: #d4d4d4;
+      &:hover {
+        cursor: pointer;
+        @include transition(color, 600ms, ease-out);
+        color: $dav-gold;
+      }
+    }
+  }
+  &_edit {
+    height: 40px;
+    padding: 6px 20px 6px 12px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .annotation-edit {
+      display: flex;
+      align-items: center;
+      &:hover {
+        mat-icon, .edit-txt {
+          cursor: pointer;
+          @include transition(color, 600ms, ease-out);
+          color: $dav-gold;
+        }
+      }
+      mat-icon {
+        line-height: 28px;
+        height: 28px;
+        @include transition(color, 600ms, ease-out);
+        color: #666;
+      }
+      .edit-txt {
+        margin-top: 3px;
+        margin-left: 6px;
+        @include transition(color, 600ms, ease-out);
+        color: #222;
+      }
+    }
+    .create-button {
+      margin-left: auto;
+      font-size: 12px;
+      font-family: 'suisse_intlmedium';
+      width: 80px;
+      height: 28px;
+    }
+  }
+}
+

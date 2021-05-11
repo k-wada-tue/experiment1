@@ -1,0 +1,27 @@
+/* mixin */
+
+@mixin inner($padding:0 24px 0 24px) {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $padding;
+  height: inherit;
+}
+
+@mixin transition($prop:background-color, $speed: 600ms, $type: ease) {
+  -webkit-transition: $prop $speed $type;
+  -moz-transition: $prop $speed $type;
+  -o-transition: $prop $speed $type;
+  -ms-transition: $prop $speed $type;
+  transition: $prop $speed $type;
+}
+
+
+/* variables */
+$dav-green: #24B5C9;
+
+$dav-navy: #1A1F3A;
+
+$dav-orange: #D85716;
+
+$dav-gold: #B58550;
+
