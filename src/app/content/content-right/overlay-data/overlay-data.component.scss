@@ -304,5 +304,8 @@
   background-color: #D85716 !important;
 }
 
-
+::ng-deep .mat-select-panel {
+  max-height: none !important;
+  height: auto !important;
+}
 

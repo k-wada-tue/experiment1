@@ -20,8 +20,13 @@ export class BaseDataComponent implements OnInit{
   @ViewChild( MatAccordion ) accordion: MatAccordion;
   datasets: Dataset[] = [
     {value: 'sports-0', viewValue: 'Moderate Exercise'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
+    {value: 'healthy-1', viewValue: 'Healthy'},
+    {value: 'drinker-2', viewValue: 'Drinker'},
+    {value: 'smoker-3', viewValue: 'Smorker'},
+    {value: 'illness-4', viewValue: 'Illuness'},
+    {value: 'physical-5', viewValue: 'Physical Unavailability'},
+    {value: 'depress-6', viewValue: 'Depression'},
+    {value: 'loneliness-7', viewValue: 'Loneliness'}
   ];
 
   ngOnInit() {
