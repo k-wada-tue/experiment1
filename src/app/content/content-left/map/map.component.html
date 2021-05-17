@@ -1,5 +1,49 @@
 <div id="map-container">
-
+  <!-- loader -->
+  <div id="loader-bg" aria-hidden="false">
+    <div id="loader-inner"></div>
+    <div id="loader"></div>
+  </div>
+  <!-- tooltip -->
+  <div id="basemap-tooltip" class="data-tooltip" aria-hidden="true">
+    <span id="basemap-tooltip-place"></span>
+    <span id="basemap-tooltip-value"></span>
+    <span id="basemap-tooltip-moreData">Click to see more data<br>about this neighborhood</span>
+  </div>
+  <div id="overlay-tooltip" aria-hidden="true"></div>
+  <!-- map legend -->
+  <div class="map-legend">
+    <span class="map-legend_title" id="legendTitle"></span>
+    <ul class="map-legend_container">
+      <li id="legend4" class="map-legend_container_legend">
+        <span id="legend4-box" class="map-legend_container_legend_box"></span>
+        <span id="legend4a-txt"></span><span class="map-legend_container_legend_measure">&nbsp;%</span>
+        <span class="map-legend_container_legend_sep">&nbsp;and over</span>
+      </li>
+      <li id="legend3" class="map-legend_container_legend">
+        <span id="legend3-box" class="map-legend_container_legend_box"></span>
+        <span id="legend3a-txt"></span>
+        <span class="map-legend_container_legend_sep">&nbsp;-&nbsp;</span>
+        <span id="legend3b-txt"></span><span class="map-legend_container_legend_measure">&nbsp;%</span>
+      </li>
+      <li id="legend2" class="map-legend_container_legend">
+        <span id="legend2-box" class="map-legend_container_legend_box"></span>
+        <span id="legend2a-txt"></span>
+        <span class="map-legend_container_legend_sep">&nbsp;-&nbsp;</span>
+        <span id="legend2b-txt"></span><span class="map-legend_container_legend_measure">&nbsp;%</span>
+      </li>
+      <li id="legend1" class="map-legend_container_legend">
+        <span id="legend1-box" class="map-legend_container_legend_box"></span>
+        <span id="legend1a-txt"></span>
+        <span class="map-legend_container_legend_sep">&nbsp;-&nbsp;</span>
+        <span id="legend1b-txt"></span><span class="map-legend_container_legend_measure">&nbsp;%</span>
+      </li>
+      <li id="legend0" class="map-legend_container_legend">
+        <span id="legend0-box" class="map-legend_container_legend_box"></span>
+        <span id="legend1a-txt">Other (No Data)</span>
+      </li>
+    </ul>
+  </div>
 </div>
 
 
