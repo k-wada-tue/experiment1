@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
+//import {MatCheckboxModule} from '@angular/material/checkbox';
+
+declare function addOverlay(status, value): any;
+// declare let checkStatus: any;
+// declare let checkValue: any;
 
 @Component ({
   selector: 'overlay-data',
@@ -7,8 +12,17 @@ import { Component } from '@angular/core';
 })
 
 export class OverlayDataComponent {
-  default = true;
-  optionnal = false;
+  default = false;
+  checked = true;
+
+  onAddOverlay(event) {
+    console.log(event.checked);
+    //checkStatus = event.checked;
+    console.log(event.source.value);
+    //checkValue = event.source.value;
+    addOverlay(event.checked, event.source.value);
+  }
+
 }
 
 

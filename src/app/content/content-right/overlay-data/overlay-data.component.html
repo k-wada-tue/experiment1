@@ -7,11 +7,69 @@
 
 <div class="data-card-container">
   <ul class="data-card-container_inner">
+
     <li class="data-card" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" value="green-area" [checked]="default" (change)="onAddOverlay($event)">
+                Green area
+              </mat-checkbox>
+          </h2>
+          <span class="title-end"></span>
+        </div>
+      </div>
+      <div class="data-card_description" aria-hidden="false">
+        <div class="desc-title">Description</div>
+        <div class="desc-content">
+          Green area data provided by Eindhoven Open Data in 2019
+        </div>
+      </div>
+    </li>
+
+    <li class="data-card" aria-selected="false">
+      <div class="data-card_title">
+        <div class="title-wrapper">
+          <h2 class="title-txt">
+              <mat-checkbox class="data-checkbox" value="parks-playgrounds" [checked]="default" (change)="onAddOverlay($event)">
+                Parks and playgrounds
+              </mat-checkbox>
+          </h2>
+          <span class="title-end"></span>
+        </div>
+      </div>
+      <div class="data-card_description" aria-hidden="false">
+        <div class="desc-title">Description</div>
+        <div class="desc-content">
+          Parks and playgrounds extracted from the point of interest data by OpenStreetMap (2020)
+        </div>
+      </div>
+    </li>
+
+    <li class="data-card" aria-selected="false">
+      <div class="data-card_title">
+        <div class="title-wrapper">
+          <h2 class="title-txt">
+              <mat-checkbox class="data-checkbox" value="bike-routes" [checked]="default" (change)="onAddOverlay($event)">
+                Bike routes
+              </mat-checkbox>
+          </h2>
+          <span class="title-end"></span>
+        </div>
+      </div>
+      <div class="data-card_description" aria-hidden="false">
+        <div class="desc-title">Description</div>
+        <div class="desc-content">
+          Bike routes data provided by Eindhoven Open Data in 2019
+        </div>
+      </div>
+    </li>
+
+    <li class="data-card" aria-selected="false">
+      <div class="data-card_title">
+        <div class="title-wrapper">
+          <h2 class="title-txt">
+              <mat-checkbox class="data-checkbox" value="sports-facilities" [checked]="default" (change)="onAddOverlay($event)">
                 Sports facilities
               </mat-checkbox>
           </h2>
@@ -21,7 +79,7 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Source and metadata (about this dataset) will be described concisely here.
+          Sports facilities (sports center, swimming pool and pitch) extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
@@ -29,7 +87,7 @@
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" value="medical-facilities" [checked]="default" (change)="onAddOverlay($event)">
                 Medical facilities
               </mat-checkbox>
           </h2>
@@ -39,7 +97,7 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          Medical facilities (doctors) extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
@@ -47,7 +105,7 @@
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" value="community-centers" [checked]="default" (change)="onAddOverlay($event)">
                 Community centers
               </mat-checkbox>
           </h2>
@@ -57,7 +115,7 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          Community centers extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
@@ -65,8 +123,8 @@
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Parks / playgrounds
+              <mat-checkbox class="data-checkbox" value="sports-shops" [checked]="default" (change)="onAddOverlay($event)">
+                Sports shops
               </mat-checkbox>
           </h2>
           <span class="title-end"></span>
@@ -75,7 +133,7 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          Sports shops (e.g. bicycle, outdoor shops) extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
@@ -83,8 +141,8 @@
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Shorts shops
+              <mat-checkbox class="data-checkbox" value="grocery-stores" [checked]="default" (change)="onAddOverlay($event)">
+                Grocery stores
               </mat-checkbox>
           </h2>
           <span class="title-end"></span>
@@ -93,7 +151,7 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          Grocery stores (supermarkets and butchers) extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
@@ -101,8 +159,8 @@
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Groceries
+              <mat-checkbox class="data-checkbox" value="fast-foods" [checked]="default" (change)="onAddOverlay($event)">
+                Fast foods
               </mat-checkbox>
           </h2>
           <span class="title-end"></span>
@@ -111,33 +169,18 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          Fast foods extracted from the point of interest data by OpenStreetMap (2020)
         </div>
       </div>
     </li>
-    <li class="data-card" aria-selected="false">
+
+
+    <li class="data-card card-disabled" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Fastfoods
-              </mat-checkbox>
-          </h2>
-          <span class="title-end"></span>
-        </div>
-      </div>
-      <div class="data-card_description" aria-hidden="false">
-        <div class="desc-title">Description</div>
-        <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
-        </div>
-      </div>
-    </li>
-    <li class="data-card" aria-selected="false">
-      <div class="data-card_title">
-        <div class="title-wrapper">
-          <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
+              disabled>
                 Air qiality (Simulated)
               </mat-checkbox>
           </h2>
@@ -151,11 +194,12 @@
         </div>
       </div>
     </li>
-    <li class="data-card" aria-selected="false">
+    <li class="data-card card-disabled" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
+              disabled>
                 Citizens' Running routes (if available)
               </mat-checkbox>
           </h2>
@@ -169,47 +213,13 @@
         </div>
       </div>
     </li>
-    <li class="data-card" aria-selected="false">
+
+    <li class="data-card card-disabled" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Bike path
-              </mat-checkbox>
-          </h2>
-          <span class="title-end"></span>
-        </div>
-      </div>
-      <div class="data-card_description" aria-hidden="false">
-        <div class="desc-title">Description</div>
-        <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
-        </div>
-      </div>
-    </li>
-    <li class="data-card" aria-selected="false">
-      <div class="data-card_title">
-        <div class="title-wrapper">
-          <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
-                Green area
-              </mat-checkbox>
-          </h2>
-          <span class="title-end"></span>
-        </div>
-      </div>
-      <div class="data-card_description" aria-hidden="false">
-        <div class="desc-title">Description</div>
-        <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
-        </div>
-      </div>
-    </li>
-    <li class="data-card" aria-selected="false">
-      <div class="data-card_title">
-        <div class="title-wrapper">
-          <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
+              disabled>
                 Local projects (May be simulated)
               </mat-checkbox>
           </h2>
@@ -224,11 +234,12 @@
         </div>
       </div>
     </li>
-    <li class="data-card" aria-selected="false">
+    <li class="data-card card-disabled" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default">
+              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
+              disabled>
                 Comments from citizens (Simulated)
               </mat-checkbox>
           </h2>

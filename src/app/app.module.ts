@@ -42,7 +42,8 @@ import { AngularMaterialModule } from './angular-material.module';
     MatCheckboxModule,
     MatExpansionModule,
     MatRadioModule,
-    MatSelectModule
+    MatSelectModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
