@@ -20,6 +20,8 @@ import { OverlayDataComponent } from './content/content-right/overlay-data/overl
 import { BaseDataComponent } from './content/content-right/base-data/base-data.component';
 import { AngularMaterialModule } from './angular-material.module';
 
+import { LogService } from './shared/log.service';
+
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -45,7 +47,7 @@ import { AngularMaterialModule } from './angular-material.module';
     MatSelectModule,
     MatCheckboxModule
   ],
-  providers: [],
+  providers: [LogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
