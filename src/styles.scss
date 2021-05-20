@@ -4,11 +4,10 @@
 
 /* Sangbleu Republic */
 
-@import './fonts.scss';
 @import './utility.scss';
 
 html, body { height: 100vh; }
-body { margin: 0; font-family: $sans-r, "Helvetica", "Segoe UI", sans-serif; overflow: hidden;}
+body { margin: 0; font-family: "Helvetica", "Segoe UI", sans-serif; overflow: hidden;}
 
   // :host {
   //   font-family: 'suisse_intlregular', Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -26,7 +25,6 @@ body { margin: 0; font-family: $sans-r, "Helvetica", "Segoe UI", sans-serif; ove
   h5,
   h6 {
     margin: 0;
-    font-family: $sansDisp-r;
   }
 
   p {
