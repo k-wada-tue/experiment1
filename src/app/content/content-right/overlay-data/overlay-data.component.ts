@@ -1,6 +1,5 @@
 import { Component} from '@angular/core';
 //import {MatCheckboxModule} from '@angular/material/checkbox';
-import { LogService } from '../../../shared/log.service';
 
 declare function addOverlay(status, value): any;
 // declare let checkStatus: any;
@@ -16,14 +15,6 @@ export class OverlayDataComponent {
   default = false;
   checked = true;
 
-  constructor(private logger: LogService) {
-  }
-
-  testLog(): void {
-      this.logger.log("Test the `log()` Method");
-      console.log('log test');
-  }
-
   onAddOverlay(event) {
     console.log(event.checked);
     //checkStatus = event.checked;
@@ -31,7 +22,6 @@ export class OverlayDataComponent {
     //checkValue = event.source.value;
     addOverlay(event.checked, event.source.value);
   }
-
 }
 
 
