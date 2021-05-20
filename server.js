@@ -6,7 +6,7 @@ const app = express();
 
 const consolere = require('console-remote-client').connect({
   server: 'http://localhost:8088',
-  channel: 'experiment1-tue', // required
+  channel: 'experiment1-tuegit ', // required
   redirectDefaultConsoleToRemote: true, // optional, default: false
   disableDefaultConsoleOutput: true, // optional, default: false
 });
