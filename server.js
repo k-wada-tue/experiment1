@@ -2,7 +2,7 @@
 const express = require('express');
 const path = require('path');
 
-const consolere = require('console-remote-client').connect({ server: https://console.re:80', channel: 'experiment1-tue' });
+const consolere = require('console-remote-client').connect({ server: 'https://console.re:80', channel: 'experiment1-tue' });
 
 const app = express();
 
