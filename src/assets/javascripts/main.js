@@ -1,4 +1,4 @@
-console.re.log('remote log test');
+console.log('remote log test');
 
 // Capturing XY positions for tooltips
 let xLocation;
