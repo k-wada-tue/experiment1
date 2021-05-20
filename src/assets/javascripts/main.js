@@ -1791,6 +1791,6 @@ function initializeMap() {
   vizmaps();
 }
 
-console.re.log('remote log test js here');
+console.log('remote log test js here');
 
 
