@@ -161,6 +161,12 @@
   font-size: 10px;
   color: #666;
   margin-top: 6px;
+  &[aria-hidden = "true"] {
+    display: none;
+  }
+  &[aria-hidden = "false"] {
+    display: block;
+  }
 }
 
 .leaflet-overlay-pane svg {

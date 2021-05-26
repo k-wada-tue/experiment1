@@ -4,11 +4,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { AngularMaterialModule } from './angular-material.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 import { ContentComponent } from './content/content.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapComponent } from './content/content-left/map/map.component';
@@ -18,12 +21,13 @@ import { AnnoataionComponent } from './content/content-left/annotation/annotatio
 import { PlayerComponent } from './content/content-left/player/player.component';
 import { OverlayDataComponent } from './content/content-right/overlay-data/overlay-data.component';
 import { BaseDataComponent } from './content/content-right/base-data/base-data.component';
-import { AngularMaterialModule } from './angular-material.module';
+
 
 @NgModule({
   declarations: [
     HeaderComponent,
     FooterComponent,
+    SidebarComponent,
     ContentComponent,
     LeftComponent,
     RightComponent,
@@ -43,7 +47,8 @@ import { AngularMaterialModule } from './angular-material.module';
     MatExpansionModule,
     MatRadioModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

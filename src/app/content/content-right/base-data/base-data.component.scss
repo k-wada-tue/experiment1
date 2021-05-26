@@ -53,7 +53,7 @@ mat-panel-title {
 }
 
 mat-form-field {
-  margin: 16px 0 24px 12px;
+  margin: 16px 0 0 12px;
 }
 
 
@@ -78,4 +78,28 @@ mat-form-field {
 
 ::ng-deep.mat-form-field.mat-focused.mat-primary .mat-select-arrow {
   color: #D85716;
+}
+
+.basemap-info {
+  margin-left: 12px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+}
+
+
+::ng-deep .mat-tooltip  {
+  white-space: pre-line !important;
+  line-height: 1rem;
+  background-color: #fff;
+  border: 1px solid #d4d4d4;
+  color: #222 !important;
+  font-size: 12px;
+}
+
+.basedata-source {
+  display: block;
+  margin-bottom: 12px;
+  margin-left: 12px;
 }

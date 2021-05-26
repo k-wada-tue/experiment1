@@ -1,5 +1,3 @@
-console.log('remote log test');
-
 // Capturing XY positions for tooltips
 let xLocation;
 let yLocation;
@@ -30,7 +28,6 @@ let selectedAttribute; //'healthy','m_drinker', 'smoker', 'overweight', 'illness
 
 // Basemap JSON data
 let baseJson;
-
 
 // Map initialization status
 let mapInitialize; //If map was rendered for the first time (true/false)
@@ -77,6 +74,35 @@ let tooltipValue;
 let tooltipContainerOL;
 let tooltipType;
 let tooltipName;
+let tooltipMoreData;
+
+
+let sidebarjs;
+let sideContent;
+
+//Demographic data DOM
+let selectedNeighbor;
+let totalpop;
+let men;
+let women;
+let age0_14;
+let age15_64;
+let age65;
+let dutch;
+let immigrants;
+let single;
+let wKids;
+let income;
+
+let foot;
+let bike;
+let auto;
+let transit;
+
+let gElem;
+let clickedPath;
+let copiedPath;
+
 
 window.onload = function(){
 
@@ -88,6 +114,7 @@ window.onload = function(){
   tooltipType = document.getElementById('overlay-tooltip-type');
   tooltipName = document.getElementById('overlay-tooltip-name');
 
+  tooltipMoreData = document.getElementById('basemap-tooltip-moreData');
   // mouse x y position
   document.addEventListener('mousemove', (e) => {
     //e = e || window.event;
@@ -103,6 +130,78 @@ window.onload = function(){
     tooltipContainerOL.style.top = yLocation + "px";
 
   });
+
+  // Create sidebarjs instance
+  sidebarjs = new SidebarJS.SidebarElement({
+    backdropOpacity: 0
+    //nativeSwipe: false,
+  });
+
+  const sliderClose = document.getElementById('slider-close');
+  sliderClose.addEventListener('click', (e)=> {
+    sidebarjs.close();
+    clickedPath[0].classList.remove('clickedNeighbor');
+    clickedPath = undefined;
+  })
+
+  console.log('loaded');
+  sideContent = document.getElementById('sideContent');
+  console.log(sideContent);
+  //sidebarjs.close();
+  sideContent.setAttribute('aria-hidden', 'false');
+
+  selectedNeighbor = document.getElementById('selected-neighbor');
+  totalpop = document.getElementById('demography-totalpop');
+  men = document.getElementById('demography-men');
+  women = document.getElementById('demography-women');
+  age0_14 = document.getElementById('demography-age0-14');
+  age15_64 = document.getElementById('demography-age15-64');
+  age65 = document.getElementById('demography-age65');
+  dutch = document.getElementById('demography-dutch');
+  immigrants = document.getElementById('demography-immigrants');
+  single = document.getElementById('demography-single');
+  wKids = document.getElementById('demography-wKids');
+  income = document.getElementById('demography-income');
+
+  foot = document.getElementById('demography-foot');
+  bike = document.getElementById('demography-bike');
+  auto = document.getElementById('demography-auto');
+  transit = document.getElementById('demography-transit');
+
+  gElem = basebuurt_svg.firstChild;
+  console.log(gElem);
+  // basebuurt_svg.addEventListener("click", function(event) {
+  //   gElem = basebuurt_svg.firstChild;
+  //   // copiedPath = gElem.firstChild;
+  //   //console.log(gElem);
+  //   if (clickedPath == undefined) {
+  //     clickedPath = event.target;
+  //     console.log(clickedPath);
+  //     gElem.appendChild(clickedPath);
+  //     copiedPath = gElem.firstChild;
+  //     copiedPath.classList.add('clickedNeighbor');
+  //   } else {
+  //     clickedPath = "";
+  //     copiedPath.classList.remove('clickedNeighbor');
+  //     gElem.remove(copiedPath);
+  //     clickedPath = event.target;
+  //     console.log(clickedPath);
+  //     gElem.appendChild(clickedPath);
+  //     copiedPath = gElem.firstChild;
+  //     copiedPath.classList.add('clickedNeighbor');
+
+  //     // clickedPath = event.target;
+  //     // clickedPath.classList.add('clickedNeighbor');
+  //     // checkNeighborSelection = true;
+  //   }
+
+
+
+
+
+
+
+  // },false);
 
 }
 
@@ -121,6 +220,9 @@ const fastfoods_path = dataPath + 'fast_food.json';
 const bikeroutes_path = dataPath + 'bike_routes.json';
 const parksplaygrounds_path = dataPath + 'parks_playgrounds.json';
 const greenarea_path = dataPath + 'green_area.json';
+
+// demography data for each nieghborhood
+const demography_path = dataPath + 'edh_demography.json';
 
 //Fetch base buurten data
 const apiReq_buurt = fetch(basebuurt_path).then((response)=> {
@@ -174,6 +276,12 @@ const apiReq_parksplaygrounds = fetch(parksplaygrounds_path).then((response)=> {
 
 //Fetch green area data
 const apiReq_greenarea = fetch(greenarea_path).then((response)=> {
+  return response.json();
+});
+
+
+//Fetch demography data
+const apiReq_demography = fetch(demography_path).then((response)=> {
   return response.json();
 });
 
@@ -412,7 +520,8 @@ const vizmaps = ()=> {
                 .style('opacity', '0.7');
 
                 feature_bb.attr('d', path).on("mouseover", handleMouseOver)
-                  .on("mouseout", handleMouseOut);
+                  .on("mouseout", handleMouseOut)
+                  .on("click", handleMouseClick)
 
                 resolve(p);
             })
@@ -439,6 +548,7 @@ const vizmaps = ()=> {
             // console.log('mouseover');
             // console.log(d);
             // console.log(i);
+            tooltipMoreData.setAttribute('aria-hidden','false');
 
             d3.select(this)
               .transition()
@@ -459,11 +569,146 @@ const vizmaps = ()=> {
 
           function handleMouseOut (d, i) {
             tooltipContainerBM.setAttribute('aria-hidden','true');
-
+            tooltipMoreData.setAttribute('aria-hidden','true');
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
               .duration(200);
+          }
+
+
+
+          function handleMouseClick (d, i) {
+            //console.log('clicked');
+            console.log(i.properties.neighbor);
+            //console.log(d);
+            let clickedNeighbor = i.properties.neighbor;
+
+            console.log(clickedPath);
+            if (clickedPath == undefined) {
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              console.log(clickedPath[0]);
+              gElem.appendChild(clickedPath[0]);
+            } else {
+              clickedPath[0].classList.remove('clickedNeighbor');
+              //console.log(gElem.lastChild);
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              console.log(clickedPath[0]);
+              gElem.appendChild(clickedPath[0]);
+            }
+
+
+            apiReq_demography.then((data)=> {
+              let demoData = data;
+              let selectedDemoData;
+              let demoDataLength = data.length;
+              // console.log(demoDataLength);
+              // console.log(demoData);
+              for (let i = 0; i < demoDataLength; i++) {
+                if (demoData[i].Buurten == clickedNeighbor) {
+                  selectedDemoData = demoData[i];
+                  // console.log(selectedDemoData);
+
+                  selectedNeighbor.innerText = selectedDemoData.Buurten;
+
+                  if (selectedDemoData.total_population !="") {
+                    totalpop.innerText = selectedDemoData.total_population + " %";
+                  } else {
+                    totalpop.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.men_2020 !="") {
+                    men.innerText = selectedDemoData.men_2020 + " %";
+                  } else {
+                    men.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.women_2020 !="") {
+                    women.innerText = selectedDemoData.women_2020 + " %";
+                  } else {
+                    women.innerText = "No data"
+                  };
+
+                  if (selectedDemoData['0-14_2020'] !="") {
+                    age0_14.innerText = selectedDemoData['0-14_2020'] + " %";
+                  } else {
+                    age0_14.innerText = "No data"
+                  };
+
+                  if (selectedDemoData['15-64_2020'] !="") {
+                    age15_64.innerText = selectedDemoData['15-64_2020'] + " %";
+                  } else {
+                    age15_64.innerText = "No data"
+                  };
+
+                  if (selectedDemoData['65andAbove_2020'] !="") {
+                    age65.innerText = selectedDemoData['65andAbove_2020'] + " %";
+                  } else {
+                    age65.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.Dutch_2020 !="") {
+                    dutch.innerText = selectedDemoData.Dutch_2020 + " %";
+                  } else {
+                    dutch.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.immigrants_2020 !="") {
+                    immigrants.innerText = selectedDemoData.immigrants_2020 + " %";
+                  } else {
+                    immigrants.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.single_2019 !="") {
+                    single.innerText = selectedDemoData.single_2019 + " %";
+                  } else {
+                    single.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.w_kids_2019 !="") {
+                    wKids.innerText = selectedDemoData.w_kids_2019 + " %";
+                  } else {
+                    wKids.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.avg_income_person_2019 !="") {
+                    income.innerText = selectedDemoData.avg_income_person_2019 + " EUR";
+                  } else {
+                    income.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.foot_2019 !="") {
+                    foot.innerText = selectedDemoData.foot_2019 + " %";
+                  } else {
+                    foot.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.fiets_2019 !="") {
+                    bike.innerText = selectedDemoData.fiets_2019 + " %";
+                  } else {
+                    bike.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.auto_2019 !="") {
+                    auto.innerText = selectedDemoData.auto_2019 + " %";
+                  } else {
+                    auto.innerText = "No data"
+                  };
+
+                  if (selectedDemoData.transit_2019 !="") {
+                    transit.innerText = selectedDemoData.transit_2019 + " %";
+                  } else {
+                    transit.innerText = "No data"
+                  };
+
+                  break;
+                };
+              }
+            });
+
+            sidebarjs.open();
           }
 
           //remove loader
@@ -579,11 +824,11 @@ const vizmaps = ()=> {
 
               // tooltipContainerBM.style.left = xLocation + "px";
               // tooltipContainerBM.style.top = yLocation + "px";
-              tooltipPlace.innerText = i.properties.district;
+              tooltipPlace.innerText = i.properties.districts;
               tooltipContainerBM.setAttribute('aria-hidden','false');
 
 
-              if (i.properties[selectedAttribute] !== null) {
+              if (i.properties[selectedAttribute] != null) {
                 tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
               } else {
                 tooltipValue.innerText = 'No Data';
@@ -1722,6 +1967,7 @@ const vizmaps = ()=> {
           loader = document.getElementById('loader-bg');
           loader.setAttribute('aria-hidden','true');
 
+
         }// reset
       })
     }, //pp
@@ -1731,18 +1977,39 @@ const vizmaps = ()=> {
   // Render all maplayers first
   //TODO: See if the map layers can be rendered in background process (Web Worker?)
   if (mapInitialize == true) {
-    mapLayers.basemap_buurt();
-    mapLayers.basemap_stadsdeel();
-    mapLayers.green_area();
-    mapLayers.parks_playgrounds();
-    mapLayers.bike_routes();
-    mapLayers.sports_facilities();
-    mapLayers.medical_facilities();
-    mapLayers.community_centers();
-    mapLayers.sports_shops();
-    mapLayers.grocery_stores();
-    mapLayers.fast_foods();
+
+    const layerAllMaps = ()=> {
+      return new Promise((resolve, reject) => {
+        mapLayers.basemap_buurt();
+        mapLayers.basemap_stadsdeel();
+        mapLayers.green_area();
+        mapLayers.parks_playgrounds();
+        mapLayers.bike_routes();
+        mapLayers.sports_facilities();
+        mapLayers.medical_facilities();
+        mapLayers.community_centers();
+        mapLayers.sports_shops();
+        mapLayers.grocery_stores();
+        mapLayers.fast_foods();
+        resolve();
+      })
+    };
+    const sidebarVisible = ()=> {
+      return new Promise((resolve, reject) => {
+        //document.addEventListener("load", function() {
+
+
+       // });
+        resolve();
+      })
+    };
+
+    Promise.resolve()
+    .then(layerAllMaps())
+    .then(sidebarVisible());
+
   }
+
 
   changeBasemap = function changeBasemap(value){
     baseStatus = value;
@@ -1793,6 +2060,7 @@ function initializeMap() {
   vizmaps();
 }
 
-console.log('remote log test js here');
+//console.log('remote log test js here');
+
 
 

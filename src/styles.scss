@@ -25,10 +25,23 @@ body { margin: 0; font-family: "Helvetica", "Segoe UI", sans-serif; overflow: hi
   h5,
   h6 {
     margin: 0;
+    font-family: "Helvetica", "Segoe UI", sans-serif;
   }
 
   p {
     margin: 0;
+  }
+
+  .clickedNeighbor {
+    stroke-width: 3px !important;
+    stroke: #222 !important;
+    //fill: #222 !important;
+  }
+
+  path {
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+
   }
 
   // .spacer {
