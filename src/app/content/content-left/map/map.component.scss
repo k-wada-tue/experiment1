@@ -149,6 +149,23 @@
     margin-top: 8px;
     margin-bottom: 4px;
   }
+  &_pm1 {
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  &_pm25 {
+    font-size: 10px;
+    color: #666;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+  &_pm10 {
+    font-size: 10px;
+    color: #666;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
 }
 
 #basemap-tooltip-value {
@@ -167,6 +184,12 @@
   &[aria-hidden = "false"] {
     display: block;
   }
+}
+
+.airquality-tooltip {
+  font-weight: bold;
+  margin-top: 6px;
+  display: block;
 }
 
 .leaflet-overlay-pane svg {

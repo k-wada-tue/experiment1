@@ -2,7 +2,7 @@
 
 .overlay-title {
   position: sticky;
-  top: 0px;
+  top: -2px;
   left: 0px;
   z-index: 999;
   background-color: #f2f2f2;
@@ -16,7 +16,7 @@
   //margin-bottom: 8px;
   //border-bottom: 1px solid #666;
   &_text {
-    font-family: 'suisse_signsemi_bold';
+    font-weight: bold;
     font-size: 20px;
     margin-top: 1px;
     margin-left: 6px;
@@ -115,7 +115,6 @@
         }
         .desc-title {
           color: #666;
-          font-family: 'suisse_intlmedium';
           font-size: 14px;
         }
         .desc-content {

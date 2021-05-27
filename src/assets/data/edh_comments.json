@@ -1,0 +1,28 @@
+{
+"type": "FeatureCollection",
+"name": "edh_comments",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "comment": "Necessity of places where people can have low intensity exercises" }, "geometry": { "type": "Point", "coordinates": [ 5.48357162201252, 51.459642460676825 ] } },
+{ "type": "Feature", "properties": { "id": 2, "comment": "Want to do exercise, but my physical condition is not good enough. How can I start some exercise?" }, "geometry": { "type": "Point", "coordinates": [ 5.479618230290166, 51.42219353593115 ] } },
+{ "type": "Feature", "properties": { "id": 3, "comment": "Don't know how to make an active lifestyle. Advice needed." }, "geometry": { "type": "Point", "coordinates": [ 5.456677533007924, 51.433541285546362 ] } },
+{ "type": "Feature", "properties": { "id": 4, "comment": "Need more affordable or free facilities to become active, such as parks and good bike paths" }, "geometry": { "type": "Point", "coordinates": [ 5.449407737699791, 51.420324971246728 ] } },
+{ "type": "Feature", "properties": { "id": 5, "comment": "Can't afford any sports at all..." }, "geometry": { "type": "Point", "coordinates": [ 5.45399227544405, 51.456773012713462 ] } },
+{ "type": "Feature", "properties": { "id": 6, "comment": "Immigrated to the Netherlands, and still feel very much isolated (Not integrated well into the culture)" }, "geometry": { "type": "Point", "coordinates": [ 5.468189998747523, 51.450720387538432 ] } },
+{ "type": "Feature", "properties": { "id": 7, "comment": "Difficult to spare some time for exercise due to busy parenting..." }, "geometry": { "type": "Point", "coordinates": [ 5.413170435215976, 51.439036176022697 ] } },
+{ "type": "Feature", "properties": { "id": 8, "comment": "May bike more if there are better bike paths and less traffic (autos)" }, "geometry": { "type": "Point", "coordinates": [ 5.396550093985524, 51.439794167446827 ] } },
+{ "type": "Feature", "properties": { "id": 9, "comment": "Like to have better access to healthy foods, such as organic grocery stores in the neighborhood" }, "geometry": { "type": "Point", "coordinates": [ 5.427694301521314, 51.459995807151245 ] } },
+{ "type": "Feature", "properties": { "id": 10, "comment": "Feel a bit isolated...need community centers where people can meet" }, "geometry": { "type": "Point", "coordinates": [ 5.454047858960219, 51.49454551462857 ] } },
+{ "type": "Feature", "properties": { "id": 11, "comment": "Don't think air quality is good here...many autos and less green space" }, "geometry": { "type": "Point", "coordinates": [ 5.429222747424501, 51.478126085871317 ] } },
+{ "type": "Feature", "properties": { "id": 12, "comment": "Hope to have some initiatives or clubs to encourage sports\/exercise in this area" }, "geometry": { "type": "Point", "coordinates": [ 5.401391833042494, 51.460757457902659 ] } },
+{ "type": "Feature", "properties": { "id": 13, "comment": "Like to have sports centers near by" }, "geometry": { "type": "Point", "coordinates": [ 5.439192786759264, 51.468678923071593 ] } },
+{ "type": "Feature", "properties": { "id": 14, "comment": "Need more green space" }, "geometry": { "type": "Point", "coordinates": [ 5.476129507423593, 51.491886678530925 ] } },
+{ "type": "Feature", "properties": { "id": 15, "comment": "Want more parks" }, "geometry": { "type": "Point", "coordinates": [ 5.477640710807044, 51.491130065541171 ] } },
+{ "type": "Feature", "properties": { "id": 16, "comment": "Want to have sports shops near by" }, "geometry": { "type": "Point", "coordinates": [ 5.493966581155934, 51.486394690000353 ] } },
+{ "type": "Feature", "properties": { "id": 17, "comment": "This neighborhood needs more facilities and environment, which make people active" }, "geometry": { "type": "Point", "coordinates": [ 5.490610656644186, 51.473932778097684 ] } },
+{ "type": "Feature", "properties": { "id": 18, "comment": "Want to stop smoking, but don't know where and who can help for it" }, "geometry": { "type": "Point", "coordinates": [ 5.414387360783238, 51.452634032707422 ] } },
+{ "type": "Feature", "properties": { "id": 19, "comment": "Busy with family things...want to have an advice how to make a balance and become more healthy and active" }, "geometry": { "type": "Point", "coordinates": [ 5.515983816652937, 51.437451935368962 ] } },
+{ "type": "Feature", "properties": { "id": 20, "comment": "Worry because home doctors are not very accessible" }, "geometry": { "type": "Point", "coordinates": [ 5.523464846513266, 51.437259560442961 ] } },
+{ "type": "Feature", "properties": { "id": 21, "comment": "Convenient, but center is not easy for running" }, "geometry": { "type": "Point", "coordinates": [ 5.474352801568815, 51.443720363286978 ] } }
+]
+}

@@ -47,6 +47,8 @@ let geojson_ff; //overlay fast food
 let geojson_br; //overlay bike routes
 let geojson_pp; //overlay pp
 let geojson_ga; //overlay pp
+let geojson_aq;
+let geojson_cm;
 
 // SVG map layers
 let basebuurt_svg;
@@ -76,9 +78,20 @@ let tooltipType;
 let tooltipName;
 let tooltipMoreData;
 
+// Tooltip DOM (airquality)
+let tooltipContainerAQ;
+let tooltipPM1;
+let tooltipPM25;
+let tooltipPM10;
+
+// Tooltip DOM (comments)
+let tooltipContainerCM;
+let tooltipComment;
 
 let sidebarjs;
 let sideContent;
+let clickedPathActive;
+clickedPathActive = false;
 
 //Demographic data DOM
 let selectedNeighbor;
@@ -114,7 +127,15 @@ window.onload = function(){
   tooltipType = document.getElementById('overlay-tooltip-type');
   tooltipName = document.getElementById('overlay-tooltip-name');
 
+  tooltipContainerAQ = document.getElementById('airquality-tooltip');
+  tooltipPM1 = document.getElementById('airquality-tooltip-pm1');
+  tooltipPM25 = document.getElementById('airquality-tooltip-pm25');
+  tooltipPM10 = document.getElementById('airquality-tooltip-pm10');
+
   tooltipMoreData = document.getElementById('basemap-tooltip-moreData');
+
+  tooltipContainerCM = document.getElementById('comment-tooltip');
+  tooltipComment = document.getElementById('data-tooltip-comment');
   // mouse x y position
   document.addEventListener('mousemove', (e) => {
     //e = e || window.event;
@@ -129,6 +150,12 @@ window.onload = function(){
     tooltipContainerOL.style.left = xLocation + "px";
     tooltipContainerOL.style.top = yLocation + "px";
 
+    tooltipContainerAQ.style.left = xLocation + "px";
+    tooltipContainerAQ.style.top = yLocation + "px";
+
+    tooltipContainerCM.style.left = xLocation + "px";
+    tooltipContainerCM.style.top = yLocation + "px";
+
   });
 
   // Create sidebarjs instance
@@ -140,7 +167,10 @@ window.onload = function(){
   const sliderClose = document.getElementById('slider-close');
   sliderClose.addEventListener('click', (e)=> {
     sidebarjs.close();
-    clickedPath[0].classList.remove('clickedNeighbor');
+    if (clickedPathActive == true) {
+      clickedPath[0].classList.remove('clickedNeighbor');
+      clickedPathActive = false;
+    }
     clickedPath = undefined;
   })
 
@@ -170,38 +200,6 @@ window.onload = function(){
 
   gElem = basebuurt_svg.firstChild;
   console.log(gElem);
-  // basebuurt_svg.addEventListener("click", function(event) {
-  //   gElem = basebuurt_svg.firstChild;
-  //   // copiedPath = gElem.firstChild;
-  //   //console.log(gElem);
-  //   if (clickedPath == undefined) {
-  //     clickedPath = event.target;
-  //     console.log(clickedPath);
-  //     gElem.appendChild(clickedPath);
-  //     copiedPath = gElem.firstChild;
-  //     copiedPath.classList.add('clickedNeighbor');
-  //   } else {
-  //     clickedPath = "";
-  //     copiedPath.classList.remove('clickedNeighbor');
-  //     gElem.remove(copiedPath);
-  //     clickedPath = event.target;
-  //     console.log(clickedPath);
-  //     gElem.appendChild(clickedPath);
-  //     copiedPath = gElem.firstChild;
-  //     copiedPath.classList.add('clickedNeighbor');
-
-  //     // clickedPath = event.target;
-  //     // clickedPath.classList.add('clickedNeighbor');
-  //     // checkNeighborSelection = true;
-  //   }
-
-
-
-
-
-
-
-  // },false);
 
 }
 
@@ -221,6 +219,9 @@ const bikeroutes_path = dataPath + 'bike_routes.json';
 const parksplaygrounds_path = dataPath + 'parks_playgrounds.json';
 const greenarea_path = dataPath + 'green_area.json';
 
+const airquality_path = dataPath + 'airquality_edh.json';
+
+const comments_path = dataPath + 'edh_comments.json';
 // demography data for each nieghborhood
 const demography_path = dataPath + 'edh_demography.json';
 
@@ -279,9 +280,18 @@ const apiReq_greenarea = fetch(greenarea_path).then((response)=> {
   return response.json();
 });
 
-
 //Fetch demography data
 const apiReq_demography = fetch(demography_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch airquality data
+const apiReq_airquality = fetch(airquality_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch comment data
+const apiReq_comments = fetch(comments_path).then((response)=> {
   return response.json();
 });
 
@@ -552,7 +562,8 @@ const vizmaps = ()=> {
 
             d3.select(this)
               .transition()
-              .style('opacity', 0.4)
+              .style('stroke', 'rgb(0,0,0)')
+              .style('opacity', 1)
               .duration(200);
 
               // tooltipContainerBM.style.left = xLocation + "px";
@@ -573,10 +584,9 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
+              .style('stroke', 'rgb(187,187,187)')
               .duration(200);
           }
-
-
 
           function handleMouseClick (d, i) {
             //console.log('clicked');
@@ -585,18 +595,27 @@ const vizmaps = ()=> {
             let clickedNeighbor = i.properties.neighbor;
 
             console.log(clickedPath);
-            if (clickedPath == undefined) {
+            if (clickedPath == undefined && clickedPathActive == false) {
               d3.select(this).classed('clickedNeighbor',true);
               clickedPath = document.getElementsByClassName('clickedNeighbor');
               console.log(clickedPath[0]);
               gElem.appendChild(clickedPath[0]);
-            } else {
+              clickedPathActive = true;
+            } else if (clickedPath != undefined && clickedPathActive == true){
               clickedPath[0].classList.remove('clickedNeighbor');
               //console.log(gElem.lastChild);
               d3.select(this).classed('clickedNeighbor',true);
               clickedPath = document.getElementsByClassName('clickedNeighbor');
               console.log(clickedPath[0]);
               gElem.appendChild(clickedPath[0]);
+            } else if (clickedPath != undefined && clickedPathActive == false) {
+              //clickedPath[0].classList.remove('clickedNeighbor');
+              //console.log(gElem.lastChild);
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              console.log(clickedPath[0]);
+              gElem.appendChild(clickedPath[0]);
+              clickedPathActive = true;
             }
 
 
@@ -614,7 +633,7 @@ const vizmaps = ()=> {
                   selectedNeighbor.innerText = selectedDemoData.Buurten;
 
                   if (selectedDemoData.total_population !="") {
-                    totalpop.innerText = selectedDemoData.total_population + " %";
+                    totalpop.innerText = selectedDemoData.total_population;
                   } else {
                     totalpop.innerText = "No data"
                   };
@@ -819,7 +838,8 @@ const vizmaps = ()=> {
 
             d3.select(this)
               .transition()
-              .style('opacity', 0.4)
+              .style('opacity', 1)
+              .style('stroke', 'rgb(0,0,0)')
               .duration(200);
 
               // tooltipContainerBM.style.left = xLocation + "px";
@@ -841,6 +861,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
+              .style('stroke', 'rgb(187,187,187)')
               .duration(200);
           }
 
@@ -911,7 +932,7 @@ const vizmaps = ()=> {
 
             feature_sf.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(254, 90, 60)')
@@ -978,7 +999,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1047,10 +1068,10 @@ const vizmaps = ()=> {
 
             feature_mf.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
-              .style('fill', 'rgb(6, 162, 226)')
+              .style('fill', 'rgb(31,120,180)')
               //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
@@ -1112,7 +1133,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1181,7 +1202,7 @@ const vizmaps = ()=> {
 
             feature_cc.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(244, 240, 52)')
@@ -1246,7 +1267,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1315,7 +1336,7 @@ const vizmaps = ()=> {
 
             feature_ss.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(134, 87, 147)')
@@ -1380,7 +1401,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1417,7 +1438,7 @@ const vizmaps = ()=> {
           .attr("in", "SourceGraphic")
           .attr("stdDeviation", 1);
 
-      grocerystores_svg = document.getElementById('grocery-stores');
+      let grocerystores_svg = document.getElementById('grocery-stores');
 
       if (mapInitialize == true) {
         grocerystores_svg.setAttribute('aria-hidden', 'true');
@@ -1449,7 +1470,7 @@ const vizmaps = ()=> {
 
             feature_gs.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(121, 164, 167)')
@@ -1514,7 +1535,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1551,7 +1572,7 @@ const vizmaps = ()=> {
           .attr("in", "SourceGraphic")
           .attr("stdDeviation", 1);
 
-      fastfoods_svg = document.getElementById('fast-foods');
+      let fastfoods_svg = document.getElementById('fast-foods');
 
       if (mapInitialize == true) {
         fastfoods_svg.setAttribute('aria-hidden', 'true');
@@ -1583,7 +1604,7 @@ const vizmaps = ()=> {
 
             feature_ff.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(164, 101, 30)')
@@ -1648,7 +1669,7 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
-              .style('stroke-width', '0px')
+              .style('stroke-width', '.5px')
               .duration(200);
           }
 
@@ -1659,6 +1680,290 @@ const vizmaps = ()=> {
         }// reset
       })
     }, //ff
+
+    // comments (point)
+    comments: function comments() {
+
+      let projectPoint = function projectPoint(x, y) {
+				let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+		    	this.stream.point(point.x, point.y);
+			};
+
+			// Transform positions
+			let transform = d3.geoTransform({point: projectPoint}),
+				path = d3.geoPath().projection(transform);
+
+			let svg_cm = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'comments');
+		  let g_cm = svg_cm.append('g').attr('class', 'leaflet-zoom-hide');
+
+
+
+      let comments_svg = document.getElementById('comments');
+
+      if (mapInitialize == true) {
+        comments_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(comments_path).then(function(geojson) {
+        geojson_cm = geojson;
+        let feature_cm = g_cm.selectAll('path')
+                              .data(geojson_cm.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_cm),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_cm.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_cm.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            feature_cm.attr('d', path)
+              .style('stroke', '#666666') //#bbbbbb
+              .style('stroke-width', '.5px')
+              .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+              .style('cursor', 'pointer')
+              .style('fill', 'rgb(251,154,153)')
+              //.style("filter","url(#dot-blur)")
+              .style('opacity', '0')
+              .transition()
+              .duration(500)
+              .style('opacity', '0.7');
+
+            let zoomLev = map.getZoom();
+            console.log(zoomLev);
+
+            if (zoomLev <= 11) {
+                feature_cm.attr("d", path.pointRadius(4));
+            } else if (zoomLev == 12) {
+                feature_cm.attr("d", path.pointRadius(5));
+            } else if (zoomLev == 13) {
+                feature_cm.attr("d", path.pointRadius(6));
+            } else if (zoomLev == 14) {
+                feature_cm.attr("d", path.pointRadius(7));
+            } else if (zoomLev == 15) {
+                feature_cm.attr("d", path.pointRadius(8));
+            } else if (zoomLev == 16) {
+                feature_cm.attr("d", path.pointRadius(9));
+            } else if (zoomLev == 17) {
+                feature_cm.attr("d", path.pointRadius(10));
+            } else if (zoomLev == 18) {
+                feature_cm.attr("d", path.pointRadius(11));
+            } else if (zoomLev == 19) {
+                feature_cm.attr("d", path.pointRadius(12));
+            } else {
+              feature_cm.attr("d", path.pointRadius(6));
+            }
+
+            feature_cm.attr('d', path).on("mouseover", handleMouseOver)
+              .on("mouseout", handleMouseOut);
+
+          function handleMouseOver(d, i) {
+            // console.log('mouseover');
+            // console.log(d);
+            // console.log(i);
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 1)
+              .style('stroke-width', '1px')
+              .duration(200);
+
+              //tooltipType.innerText = i.properties.type;
+              tooltipContainerCM.setAttribute('aria-hidden','false');
+              tooltipComment.innerText = i.properties.comment;
+
+          } //handleMouseOver
+
+          function handleMouseOut (d, i) {
+            tooltipContainerCM.setAttribute('aria-hidden','true');
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 0.7)
+              .style('stroke-width', '.5px')
+              .duration(200);
+          }
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //cm
+
+    // air quality (point)
+    air_quality: function air_quality() {
+
+      let projectPoint = function projectPoint(x, y) {
+				let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+		    	this.stream.point(point.x, point.y);
+			};
+
+			// Transform positions
+			let transform = d3.geoTransform({point: projectPoint}),
+				path = d3.geoPath().projection(transform);
+
+			let svg_aq = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'air-quality');
+		  let g_aq = svg_aq.append('g').attr('class', 'leaflet-zoom-hide');
+
+      //filters go in defs element
+      let defs = svg_aq.append("defs");
+
+      let filter = defs.append("filter")
+          .attr("id", "dot-blur");
+
+      filter.append("feGaussianBlur")
+          .attr("in", "SourceGraphic")
+          .attr("stdDeviation", "10");
+
+      airquality_svg = document.getElementById('air-quality');
+
+      if (mapInitialize == true) {
+        airquality_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(airquality_path).then(function(geojson) {
+        geojson_aq = geojson;
+        let feature_aq = g_aq.selectAll('path')
+                              .data(geojson_aq.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_aq),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_aq.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_aq.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+
+            // const pm25max = d3.max(geojson_aq.features, function(d) { return d['properties']['PM2.5'] });
+		        // const pm25min = d3.min(geojson_aq.features, function(d) { return d['properties']['PM2.5'] });
+
+            // console.log(pm25max);
+            // console.log(pm25min);
+
+            feature_aq.attr('d', path)
+              .style('stroke', '#999') //#bbbbbb
+              .style('stroke-width', '0px')
+              .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+              .style('cursor', 'pointer')
+              .style('fill', (d)=> {
+                if (d.properties['PM2.5'] >= 7) {
+                    return 'rgb(115,115,115)';
+                } else if (d.properties['PM2.5'] >= 4 & d.properties['PM2.5'] < 7) {
+                    return 'rgb(189,189,189)';
+                } else if (d.properties['PM2.5'] < 4) {
+                    return 'rgb(240,240,240)';
+                }
+              })
+              .style("filter","url(#dot-blur)")
+              .style('opacity', '0')
+              .transition()
+              .duration(500)
+              .style('opacity', '0.8');
+
+            let zoomLev = map.getZoom();
+            console.log(zoomLev);
+
+            if (zoomLev <= 11) {
+                feature_aq.attr("d", path.pointRadius(8));
+            } else if (zoomLev == 12) {
+                feature_aq.attr("d", path.pointRadius(10));
+            } else if (zoomLev == 13) {
+                feature_aq.attr("d", path.pointRadius(12));
+            } else if (zoomLev == 14) {
+                feature_aq.attr("d", path.pointRadius(14));
+            } else if (zoomLev == 15) {
+                feature_aq.attr("d", path.pointRadius(16));
+            } else if (zoomLev == 16) {
+                feature_aq.attr("d", path.pointRadius(18));
+            } else if (zoomLev == 17) {
+                feature_aq.attr("d", path.pointRadius(22));
+            } else if (zoomLev == 18) {
+                feature_aq.attr("d", path.pointRadius(22));
+            } else if (zoomLev == 19) {
+                feature_aq.attr("d", path.pointRadius(24));
+            } else {
+              feature_aq.attr("d", path.pointRadius(12));
+            }
+
+            feature_aq.attr('d', path).on("mouseover", handleMouseOver)
+              .on("mouseout", handleMouseOut);
+
+          function handleMouseOver(d, i) {
+            // console.log('mouseover');
+            // console.log(d);
+            // console.log(i);
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 1)
+              .style('stroke-width', '1px')
+              .duration(200);
+
+              console.log(i.properties['PM1']);
+
+              if (i.properties['PM1'] != null) {
+                tooltipPM1.innerText = i.properties['PM1'] + " μg/m3";
+              } else {
+                tooltipPM1.innerText = 'Not available';
+              }
+
+              if (i.properties['PM2.5'] != null) {
+                tooltipPM25.innerText = i.properties['PM2.5'] + " μg/m3";
+              } else {
+                tooltipPM25.innerText = 'Not available';
+              }
+
+              if (i.properties['PM10'] != null) {
+                tooltipPM10.innerText = i.properties['PM10'] + " μg/m3";
+              } else {
+                tooltipPM10.innerText = 'Not available';
+              }
+
+              tooltipContainerAQ.setAttribute('aria-hidden','false');
+          } //handleMouseOver
+
+          function handleMouseOut (d, i) {
+            tooltipContainerAQ.setAttribute('aria-hidden','true');
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 0.8)
+              .style('stroke-width', '0px')
+              .duration(200);
+          }
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //aq
 
     // bike routes (line)
     bike_routes: function bike_routes() {
@@ -1718,7 +2023,7 @@ const vizmaps = ()=> {
             let zoomLev = map.getZoom();
 
 	            feature_br.attr('d', path)
-                   .style('stroke', 'rgb(67,133,244)')
+                   .style('stroke', 'rgb(170, 139, 21)')
                    .style('opacity', 0.7)
                    .style('stroke-width', ()=>{
                    		if (zoomLev <= 11) {
@@ -1912,7 +2217,7 @@ const vizmaps = ()=> {
                 // .style('stroke-width', '1px')
                 .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
                 .style('cursor', 'pointer')
-                .style('fill', 'rgb(117, 182, 63)')//(d)=> {
+                .style('fill', 'rgb(109,192,103)')//(d)=> {
                   // if (d.properties[selectedAttribute] >= interval6) {
                   //     return 'rgb(204,76,2)';
                   // } else if (d.properties[selectedAttribute] >= interval4 & d.properties[selectedAttribute] < interval6) {
@@ -1944,11 +2249,16 @@ const vizmaps = ()=> {
                   .style('opacity', 0.4)
                   .duration(200);
 
-                  tooltipType.innerText = i.properties.type;
+                  function capitalize(initialLetter)
+                  {
+                      return initialLetter[0].toUpperCase() + initialLetter.slice(1);
+                  }
+
+                  tooltipType.innerText = capitalize(i.properties.type);
                   tooltipContainerOL.setAttribute('aria-hidden','false');
 
                   if (i.properties.name !== null) {
-                    tooltipName.innerText = i.properties.name;
+                    tooltipName.innerText = capitalize(i.properties.name);
                   } else {
                     tooltipName.innerText = 'Not available';
                   }
@@ -1966,8 +2276,6 @@ const vizmaps = ()=> {
           //remove loader
           loader = document.getElementById('loader-bg');
           loader.setAttribute('aria-hidden','true');
-
-
         }// reset
       })
     }, //pp
@@ -1978,8 +2286,6 @@ const vizmaps = ()=> {
   //TODO: See if the map layers can be rendered in background process (Web Worker?)
   if (mapInitialize == true) {
 
-    const layerAllMaps = ()=> {
-      return new Promise((resolve, reject) => {
         mapLayers.basemap_buurt();
         mapLayers.basemap_stadsdeel();
         mapLayers.green_area();
@@ -1991,25 +2297,10 @@ const vizmaps = ()=> {
         mapLayers.sports_shops();
         mapLayers.grocery_stores();
         mapLayers.fast_foods();
-        resolve();
-      })
-    };
-    const sidebarVisible = ()=> {
-      return new Promise((resolve, reject) => {
-        //document.addEventListener("load", function() {
-
-
-       // });
-        resolve();
-      })
-    };
-
-    Promise.resolve()
-    .then(layerAllMaps())
-    .then(sidebarVisible());
+        mapLayers.comments();
+        mapLayers.air_quality();
 
   }
-
 
   changeBasemap = function changeBasemap(value){
     baseStatus = value;
@@ -2032,6 +2323,7 @@ const vizmaps = ()=> {
     selectedAttribute = newAttr;
     if (baseStatus == 'buurt') {
       bindDataBB(newAttr, baseStatus);
+      clickedPathActive = false;
     } else if (baseStatus == 'stadsdeel') {
       bindDataBS(newAttr, baseStatus);
     }

@@ -173,15 +173,12 @@
         </div>
       </div>
     </li>
-
-
-    <li class="data-card card-disabled" aria-selected="false">
+    <li class="data-card" aria-selected="false">
       <div class="data-card_title">
         <div class="title-wrapper">
           <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
-              disabled>
-                Air qiality (Simulated)
+              <mat-checkbox class="data-checkbox" value="comments" [checked]="default" (change)="onAddOverlay($event)">
+                Comments from citizens (Simulated)
               </mat-checkbox>
           </h2>
           <span class="title-end"></span>
@@ -190,7 +187,25 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         <div class="desc-content">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
+          This is the simulated datasets to show (possible) comments from citizens regarding their vitality in the city. Please note this is very randomly generated data and not precisely related to facts happening in the city.
+        </div>
+      </div>
+    </li>
+    <li class="data-card" aria-selected="false">
+      <div class="data-card_title">
+        <div class="title-wrapper">
+          <h2 class="title-txt">
+              <mat-checkbox class="data-checkbox" value="air-quality" [checked]="default" (change)="onAddOverlay($event)">
+                Air qiality
+              </mat-checkbox>
+          </h2>
+          <span class="title-end"></span>
+        </div>
+      </div>
+      <div class="data-card_description" aria-hidden="false">
+        <div class="desc-title">Description</div>
+        <div class="desc-content">
+          Air quality data contains PM1, PM2.5 and PM10 provided by Eindhoven Open Data. This data was captured on May 26, 2021 at 8:30am from each airbox station in the city. Colors show the intensity of PM2.5 based on the average in Eindhoven at that moment (light gray:low, midium gray: average, and dark gray: high *0 to 20µg/m3 is considered as good to moderate).
         </div>
       </div>
     </li>
@@ -229,26 +244,6 @@
       <div class="data-card_description" aria-hidden="false">
         <div class="desc-title">Description</div>
         If available, the (annoymized questionaire)data from the project in Bennekel will be used.
-        <div class="desc-content">
-
-        </div>
-      </div>
-    </li>
-    <li class="data-card card-disabled" aria-selected="false">
-      <div class="data-card_title">
-        <div class="title-wrapper">
-          <h2 class="title-txt">
-              <mat-checkbox class="data-checkbox" [checked]="default" [class.mat-checkbox-disabled]="false"
-              disabled>
-                Comments from citizens (Simulated)
-              </mat-checkbox>
-          </h2>
-          <span class="title-end"></span>
-        </div>
-      </div>
-      <div class="data-card_description" aria-hidden="false">
-        <div class="desc-title">Description</div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis felis eu lacus laoreet, ac pharetra lacus laoreet.
         <div class="desc-content">
 
         </div>
