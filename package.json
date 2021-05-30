@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js", //NODE_ENV=production
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
