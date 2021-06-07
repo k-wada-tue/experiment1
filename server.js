@@ -4,14 +4,14 @@ const path = require('path');
 
 const app = express();
 
-const consolere = require('console-remote-client').connect({
-  server: 'https://console.re',
-  channel: 'experiment1-tue', // required
-  redirectDefaultConsoleToRemote: true, // optional, default: false
-  disableDefaultConsoleOutput: true, // optional, default: false
-});
+// const consolere = require('console-remote-client').connect({
+//   server: 'https://console.re',
+//   channel: 'experiment1-tue', // required
+//   redirectDefaultConsoleToRemote: true, // optional, default: false
+//   disableDefaultConsoleOutput: true, // optional, default: false
+// });
 
-console.re.log('remote log test from node');
+// console.re.log('remote log test from node');
 
 
 // Serve only the static files form the dist directory
