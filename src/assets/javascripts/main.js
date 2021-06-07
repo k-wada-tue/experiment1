@@ -1,11 +1,3 @@
-const consolere = {
-  channel:'experiment1-tue',
-  api:'//console.re/connector.js',
-  ready: function(c) {var d=document,s=d.createElement('script'),l;s.src=this.api;s.id='consolerescript';s.onreadystatechange=s.onload=function(){if(!l){c();}l=true;};d.getElementsByTagName('head')[0].appendChild(s);}};
-
-  consolere.ready({ console.re.log('remote log test'); });
-
-
 // Capturing XY positions for tooltips
 let xLocation;
 let yLocation;
