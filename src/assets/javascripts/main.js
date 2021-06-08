@@ -2353,7 +2353,7 @@ function initializeMap() {
 }
 
 //console.log('remote log test js here');
-console.re.log('remote log test from js');
+// console.re.log('remote log test from js');
 
 
 
