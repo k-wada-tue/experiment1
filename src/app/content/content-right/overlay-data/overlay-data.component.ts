@@ -5,7 +5,7 @@ declare function addOverlay(status, value): any;
 // declare let checkStatus: any;
 // declare let checkValue: any;
 
-declare const gtag: any;
+declare let gtag: any;
 
 @Component ({
   selector: 'overlay-data',
