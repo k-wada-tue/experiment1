@@ -6,6 +6,8 @@ declare function addOverlay(status, value): any;
 // declare let checkValue: any;
 
 declare let gtag: any;
+export let checkStatus: any;
+export let checkValue: any;
 
 @Component ({
   selector: 'overlay-data',
@@ -19,20 +21,21 @@ export class OverlayDataComponent {
 
   onAddOverlay(event) {
     console.log(event.checked);
-    //checkStatus = event.checked;
+    checkStatus = event.checked;
+
     console.log(event.source.value);
+    checkValue = event.source.value;
     //checkValue = event.source.value;
     addOverlay(event.checked, event.source.value);
   }
 
-  trackGreenArea(){
+  trackOverlayCheck(){
     gtag('event', 'click', {
-    'event_category': 'check',
-    'event_label': 'green-area',
+    'event_category': 'checked',
+    'event_label': checkValue,
+    'event_status': 'checkbox_' + checkStatus,
     'value': 0 })
   }
-
-
 }
 
 
