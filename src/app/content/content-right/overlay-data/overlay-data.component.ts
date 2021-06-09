@@ -26,10 +26,10 @@ export class OverlayDataComponent {
   }
 
   trackGreenArea(){
-    gtag('event', 'TRACK_ME_BUTTON_CLICKED', {
-    'event_category': 'BUTTON_CLICK',
-    'event_label': 'Track Me Click',
-    'value': 'Put a value here that is meaningful with respect to the click event'   })
+    gtag('event', 'click', {
+    'event_category': 'check',
+    'event_label': 'green-area',
+    'value': 0 })
   }
 
 
