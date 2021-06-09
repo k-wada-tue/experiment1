@@ -13,7 +13,6 @@ const app = express();
 
 // console.re.log('remote log test from node');
 
-
 // Serve only the static files form the dist directory
 app.use(express.static(__dirname + '/dist'));
 
