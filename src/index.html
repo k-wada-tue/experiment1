@@ -14,14 +14,23 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-02R0BLLFHX"></script>
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-02R0BLLFHX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'G-02R0BLLFHX');
+  </script> -->
+
+  <script>
+    var myApp = angular.module('myModule', ['angular-google-analytics']);
+      myApp.config(['AnalyticsProvider', function (AnalyticsProvider) {
+    // Add configuration code as desired
+    AnalyticsProvider.setAccount('G-02R0BLLFHX');  //UU-XXXXXXX-X should be your tracking code
+  }]).run(['Analytics', function(Analytics) { }]);
   </script>
+
   <!-- jQuery -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 
