@@ -2,6 +2,7 @@ import { Component} from '@angular/core';
 //import {MatCheckboxModule} from '@angular/material/checkbox';
 
 declare function addOverlay(status, value): any;
+//export function trackOverlay(): any;
 // declare let checkStatus: any;
 // declare let checkValue: any;
 
@@ -17,24 +18,21 @@ export let checkValue: any;
 
 export class OverlayDataComponent {
   default = false;
-  checked = true;
+  // checked = true;
 
   onAddOverlay(event) {
     console.log(event.checked);
     checkStatus = event.checked;
 
-    console.log(event.source.value);
     checkValue = event.source.value;
-    //checkValue = event.source.value;
-    addOverlay(event.checked, event.source.value);
-  }
 
-  trackOverlayCheck(){
+    addOverlay(event.checked, event.source.value);
+
     gtag('event', 'click', {
-    'event_category': 'checked',
-    'event_label': checkValue,
-    'event_status': 'checkbox_' + checkStatus,
-    'value': 0 })
+      'event_category': 'checked',
+      'event_label': 'something',
+      //'event_status': 'checkbox_' + checkStatus,
+      'value': 0 })
   }
 }
 
