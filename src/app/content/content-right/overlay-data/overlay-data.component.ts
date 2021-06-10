@@ -13,7 +13,7 @@ function trackOverlay(value) {
     console.log('excuted');
     console.log(value);
     gtag('event', 'click', {
-      'event_category': 'checked',
+      'event_category': value + '_checked',
       'event_label': value,
       //'event_status': 'checkbox_' + checkStatus,
       'value': 0 })
