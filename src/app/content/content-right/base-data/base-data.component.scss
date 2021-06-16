@@ -80,11 +80,15 @@ mat-form-field {
   color: #D85716;
 }
 
-.basemap-info {
+#basemap-info {
   margin-left: 12px;
+  color: #666;
   &:hover {
     cursor: pointer;
     opacity: 0.6;
+  }
+  &.active {
+    color: #D85716;
   }
 }
 

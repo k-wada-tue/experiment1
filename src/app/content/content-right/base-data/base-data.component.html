@@ -14,7 +14,7 @@
         <mat-radio-button class="boundary-option" value="stadsdeel" (change)="onBasemapChange($event.value)">Districts (Stadsdelen)</mat-radio-button>
         <mat-radio-button class="boundary-option" value="buurt" checked="true" (change)="onBasemapChange($event.value)">Neighborhoods (Buurten)</mat-radio-button>
       </mat-radio-group>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" id="basemap-attr" aria-selected="false">
         <mat-label>Select base vitality data</mat-label>
         <mat-select (selectionChange)="onAttrChange($event.value)">
           <mat-option *ngFor="let dataset of datasets" [value]="dataset.value">
@@ -22,10 +22,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-icon matTooltip="{{tooltiptext()}}" matTooltipPosition="right" class="basemap-info">info</mat-icon>
-      <small class="basedata-source">
+      <mat-icon matTooltip="{{tooltiptext()}}" matTooltipPosition="right" id="basemap-info">info</mat-icon>
+      <!-- <small class="basedata-source">
         Source: RIVM Open data StatLine - Gezondheid per wijk en buurt 2016<br>(19 years and older)
-      </small>
+      </small> -->
     </div>
 
   </mat-expansion-panel>

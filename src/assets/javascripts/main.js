@@ -45,14 +45,17 @@ let geojson_ss; //overlay sports shops
 let geojson_gs; //overlay groceries
 let geojson_ff; //overlay fast food
 let geojson_br; //overlay bike routes
-let geojson_pp; //overlay pp
+let geojson_pp; //overlay bike routes
 let geojson_ga; //overlay pp
 let geojson_aq;
 let geojson_cm;
+let geojson_ol; //Eindhoven outline
+
 
 // SVG map layers
 let basebuurt_svg;
 let basestadsdeel_svg;
+let bennekel_svg;
 
 //function to change attribute, color filling and legend on the base maps
 let changeAttr;
@@ -116,6 +119,8 @@ let gElem;
 let clickedPath;
 let copiedPath;
 
+let basemapAttr;
+let basemapInfo;
 
 window.onload = function(){
 
@@ -136,6 +141,21 @@ window.onload = function(){
 
   tooltipContainerCM = document.getElementById('comment-tooltip');
   tooltipComment = document.getElementById('data-tooltip-comment');
+
+  basemapAttr = document.getElementById('basemap-attr');
+  basemapInfo = document.getElementById('basemap-info');
+
+  const observer = new MutationObserver(records => {
+    if (!basemapAttr.classList.contains('mat-focused')) {
+      basemapInfo.classList.remove('active');
+    }
+  })
+
+  observer.observe(basemapAttr, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+
   // mouse x y position
   document.addEventListener('mousemove', (e) => {
     //e = e || window.event;
@@ -207,23 +227,35 @@ window.onload = function(){
 const dataPath = '/assets/data/';
 
 // Paths for each json files
+
+//Area
 const basebuurt_path = dataPath + 'edh_buurt_base.json';
 const basestadsdeel_path = dataPath + 'edh_stadsdeel_base.json';
+const outline_path = dataPath + 'edh_outline.json';
+const bennekel_path = dataPath + 'bennekel.json';
+
+//Line
+const traffic_path = dataPath + 'traffic.json';
+const bikeroutes_path = dataPath + 'bike_routes.json';
+const runningroutes_path = dataPath + 'running_routes.json';
+
+//Point
 const sportsfacilities_path = dataPath + 'sports_facilities.json';
 const medicalfacilities_path = dataPath + 'medical_facilities.json';
 const communitycenters_path = dataPath + 'community_centers.json';
 const sportsshops_path = dataPath + 'sports_shops.json';
 const grocerystores_path = dataPath + 'grocery_stores.json';
 const fastfoods_path = dataPath + 'fast_food.json';
-const bikeroutes_path = dataPath + 'bike_routes.json';
+
 const parksplaygrounds_path = dataPath + 'parks_playgrounds.json';
 const greenarea_path = dataPath + 'green_area.json';
-
 const airquality_path = dataPath + 'airquality_edh.json';
 
-const comments_path = dataPath + 'edh_comments.json';
+const publicconcerns_path = dataPath + 'public_concerns.json';
 // demography data for each nieghborhood
 const demography_path = dataPath + 'edh_demography.json';
+
+
 
 //Fetch base buurten data
 const apiReq_buurt = fetch(basebuurt_path).then((response)=> {
@@ -232,6 +264,31 @@ const apiReq_buurt = fetch(basebuurt_path).then((response)=> {
 
 //Fetch base stadsdelen data
 const apiReq_stadsdeel = fetch(basestadsdeel_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch outline data
+const apiReq_outline = fetch(outline_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch bennekel data
+const apiReq_bennekel = fetch(outline_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch traffic data
+const apiReq_traffic = fetch(traffic_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch bike routes data
+const apiReq_bikeroutes = fetch(bikeroutes_path).then((response)=> {
+  return response.json();
+});
+
+//Fetch running routes data
+const apiReq_runningroutes = fetch(runningroutes_path).then((response)=> {
   return response.json();
 });
 
@@ -265,11 +322,6 @@ const apiReq_fastfoods = fetch(fastfoods_path).then((response)=> {
   return response.json();
 });
 
-//Fetch bike routes data
-const apiReq_bikeroutes = fetch(bikeroutes_path).then((response)=> {
-  return response.json();
-});
-
 //Fetch parks and playgrounds data
 const apiReq_parksplaygrounds = fetch(parksplaygrounds_path).then((response)=> {
   return response.json();
@@ -291,7 +343,7 @@ const apiReq_airquality = fetch(airquality_path).then((response)=> {
 });
 
 //Fetch comment data
-const apiReq_comments = fetch(comments_path).then((response)=> {
+const apiReq_publicconcerns = fetch(publicconcerns_path).then((response)=> {
   return response.json();
 });
 
@@ -873,7 +925,445 @@ const vizmaps = ()=> {
       })
     }, //bs
 
+    // Basemap Outline
+    basemap_outline: function basemap_outline() {
+
+      let projectPoint = function projectPoint(x, y) {
+				let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+		    	this.stream.point(point.x, point.y);
+			};
+
+			// Transform positions
+			let transform = d3.geoTransform({point: projectPoint}),
+				path = d3.geoPath().projection(transform);
+
+			let svg_bo = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'basemap-outline');
+		  let g_bo = svg_bo.append('g').attr('class', 'leaflet-zoom-hide');
+
+      baseoutline_svg = document.getElementById('basemap-outline');
+
+      // if (mapInitialize == true) {
+      //   basestadsdeel_svg.setAttribute('aria-hidden', 'true');
+      // }
+
+      d3.json(outline_path).then(function(geojson) {
+        geojson_bo = geojson;
+        let feature_bo = g_bo.selectAll('path')
+                              .data(geojson_bo.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_bs),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_bo.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px');
+
+            g_bo.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+
+
+                feature_bo.attr('d', path)
+                  .style('stroke', '#999999') //#bbbbbb
+                  .style('stroke-width', '3px')
+                  .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+                  .style('fill', "none")
+                  .style('opacity', '0.9');
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //bo
+
+    // Overlay Bennekel
+    bennekel: function bennekel() {
+
+      let projectPoint = function projectPoint(x, y) {
+				let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+		    	this.stream.point(point.x, point.y);
+			};
+
+			// Transform positions
+			let transform = d3.geoTransform({point: projectPoint}),
+				path = d3.geoPath().projection(transform);
+
+			let svg_bk = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'bennekel');
+		  let g_bk = svg_bk.append('g').attr('class', 'leaflet-zoom-hide');
+
+      bennekel_svg = document.getElementById('bennekel');
+
+      if (mapInitialize == true) {
+        bennekel_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(bennekel_path).then(function(geojson) {
+        geojson_bk = geojson;
+        let feature_bk = g_bk.selectAll('path')
+                              .data(geojson_bk.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_bk),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_bk.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px');
+
+            g_bk.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            feature_bk.attr('d', path)
+              .style('stroke', '#666666') //#bbbbbb
+              .style('stroke-width', '2px')
+              .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+              .style('cursor', 'pointer')
+              .style('fill', 'rgb(27,50,141)')
+              .style('opacity', '0.7');
+
+              feature_bk.attr('d', path).on("mouseover", handleMouseOver)
+                .on("mouseout", handleMouseOut);
+
+          function handleMouseOver(d, i) {
+            // console.log('mouseover');
+            // console.log(d);
+            // console.log(i);
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 1)
+              .style('stroke', 'rgb(0,0,0)')
+              .duration(200);
+
+              // tooltipContainerBM.style.left = xLocation + "px";
+              // tooltipContainerBM.style.top = yLocation + "px";
+              // tooltipPlace.innerText = i.properties.districts;
+              // tooltipContainerBM.setAttribute('aria-hidden','false');
+
+
+              // if (i.properties[selectedAttribute] != null) {
+              //   tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
+              // } else {
+              //   tooltipValue.innerText = 'No Data';
+              // }
+          } //handleMouseOver
+
+          function handleMouseOut (d, i) {
+            // tooltipContainerBM.setAttribute('aria-hidden','true');
+
+            d3.select(this)
+              .transition()
+              .style('opacity', 0.7)
+              .style('stroke', 'rgb(187,187,187)')
+              .duration(200);
+          }
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //bk
+
     // Overlay datasets
+
+    // traffic (line)
+    traffic: function traffic() {
+
+      let projectPoint = function projectPoint(x, y) {
+        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+          this.stream.point(point.x, point.y);
+      };
+
+      // Transform positions
+      let transform = d3.geoTransform({point: projectPoint}),
+        path = d3.geoPath().projection(transform);
+
+      let svg_tr = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'traffic');
+      let g_tr = svg_tr.append('g').attr('class', 'leaflet-zoom-hide');
+
+      //filters go in defs element
+      // let defs = svg_tr.append("defs");
+
+      // let filter = defs.append("filter")
+      //     .attr("id", "dot-blur");
+
+      // filter.append("feGaussianBlur")
+      //     .attr("in", "SourceGraphic")
+      //     .attr("stdDeviation", 1);
+
+      traffic_svg = document.getElementById('traffic');
+
+      if (mapInitialize == true) {
+        traffic_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(traffic_path).then(function(geojson) {
+        geojson_tr = geojson;
+        let feature_tr = g_tr.selectAll('path')
+                              .data(geojson_tr.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_tr),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_tr.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_tr.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            let zoomLev = map.getZoom();
+
+	            feature_tr.attr('d', path)
+                   .style('stroke','#222222') //rgb(189,16,40)
+                   .style('opacity', (d)=> {
+                      if (d.properties.max_speed >= 100) {
+                        return '1';
+                      } else if (d.properties.max_speed < 100 & d.properties.max_speed >= 75) {
+                          return '0.75';
+                      } else if (d.properties.max_speed < 75 & d.properties.max_speed >= 50) {
+                          return '0.5';
+                      } else if (d.properties.max_speed < 50 & d.properties.max_speed >= 25) {
+                          return '0.25';
+                      } else if (d.properties.max_speed < 25) {
+                          return '0';
+                      };
+                   })
+                   //.style('opacity', 0.7)
+                   .style('stroke-width', ()=>{
+                   		if (zoomLev <= 11) {
+	                        return 1;
+	                    } else if (zoomLev == 12) {
+	                        return 1.5;
+	                    } else if (zoomLev == 13) {
+	                        return 2;
+	                    } else if (zoomLev == 14) {
+	                        return 3;
+	                    } else if (zoomLev == 15) {
+	                        return 4;
+	                    } else if (zoomLev == 16) {
+	                		return 5;
+	                    } else {
+	                    	return 2;
+	                    }
+                   })
+                   .style('fill', 'none')
+        		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
+
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //tr
+
+    // bike routes (line)
+    bike_routes: function bike_routes() {
+
+      let projectPoint = function projectPoint(x, y) {
+        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+          this.stream.point(point.x, point.y);
+      };
+
+      // Transform positions
+      let transform = d3.geoTransform({point: projectPoint}),
+        path = d3.geoPath().projection(transform);
+
+      let svg_br = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'bike-routes');
+      let g_br = svg_br.append('g').attr('class', 'leaflet-zoom-hide');
+
+      //filters go in defs element
+      let defs = svg_br.append("defs");
+
+      let filter = defs.append("filter")
+          .attr("id", "dot-blur");
+
+      filter.append("feGaussianBlur")
+          .attr("in", "SourceGraphic")
+          .attr("stdDeviation", 1);
+
+      bikeroutes_svg = document.getElementById('bike-routes');
+
+      if (mapInitialize == true) {
+        bikeroutes_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(bikeroutes_path).then(function(geojson) {
+        geojson_br = geojson;
+        let feature_br = g_br.selectAll('path')
+                              .data(geojson_br.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_br),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_br.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_br.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            let zoomLev = map.getZoom();
+
+	            feature_br.attr('d', path)
+                   .style('stroke', 'rgb(170, 139, 21)')
+                   .style('opacity', 0.7)
+                   .style('stroke-width', ()=>{
+                   		if (zoomLev <= 11) {
+	                        return 1;
+	                    } else if (zoomLev == 12) {
+	                        return 1.5;
+	                    } else if (zoomLev == 13) {
+	                        return 2;
+	                    } else if (zoomLev == 14) {
+	                        return 3;
+	                    } else if (zoomLev == 15) {
+	                        return 4;
+	                    } else if (zoomLev == 16) {
+	                		return 5;
+	                    } else {
+	                    	return 1;
+	                    }
+                   })
+                   .style('fill', 'none')
+        		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
+
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //br
+
+     // running_routes (line)
+     running_routes: function running_routes() {
+
+      let projectPoint = function projectPoint(x, y) {
+        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+          this.stream.point(point.x, point.y);
+      };
+
+      // Transform positions
+      let transform = d3.geoTransform({point: projectPoint}),
+        path = d3.geoPath().projection(transform);
+
+      let svg_rr = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'running-routes');
+      let g_rr = svg_rr.append('g').attr('class', 'leaflet-zoom-hide');
+
+      //filters go in defs element
+      // let defs = svg_tr.append("defs");
+
+      // let filter = defs.append("filter")
+      //     .attr("id", "dot-blur");
+
+      // filter.append("feGaussianBlur")
+      //     .attr("in", "SourceGraphic")
+      //     .attr("stdDeviation", 1);
+
+      runningroutes_svg = document.getElementById('running-routes');
+
+      if (mapInitialize == true) {
+        runningroutes_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(runningroutes_path).then(function(geojson) {
+        geojson_rr = geojson;
+        let feature_rr = g_rr.selectAll('path')
+                              .data(geojson_rr.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_rr),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_rr.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_rr.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            let zoomLev = map.getZoom();
+
+	            feature_rr.attr('d', path)
+                   .style('stroke','rgb(247,53,99)')
+                   .style('opacity', 0.3)
+                   .style('stroke-width', ()=>{
+                   		if (zoomLev <= 11) {
+	                        return 2;
+	                    } else if (zoomLev == 12) {
+	                        return 3;
+	                    } else if (zoomLev == 13) {
+	                        return 4;
+	                    } else if (zoomLev == 14) {
+	                        return 5;
+	                    } else if (zoomLev == 15) {
+	                        return 6;
+	                    } else if (zoomLev == 16) {
+	                		return 7;
+	                    } else {
+	                    	return 3;
+	                    }
+                   })
+                   .style('fill', 'none')
+        		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
+
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //rr
 
     // sports facilities (point)
     sports_facilities: function sports_facilitie() {
@@ -1682,7 +2172,7 @@ const vizmaps = ()=> {
     }, //ff
 
     // comments (point)
-    comments: function comments() {
+    public_concerns: function public_concerns() {
 
       let projectPoint = function projectPoint(x, y) {
 				let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
@@ -1693,21 +2183,21 @@ const vizmaps = ()=> {
 			let transform = d3.geoTransform({point: projectPoint}),
 				path = d3.geoPath().projection(transform);
 
-			let svg_cm = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'comments');
-		  let g_cm = svg_cm.append('g').attr('class', 'leaflet-zoom-hide');
+			let svg_pc = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'public-concerns');
+		  let g_pc = svg_pc.append('g').attr('class', 'leaflet-zoom-hide');
 
 
 
-      let comments_svg = document.getElementById('comments');
+      let publicconcerns_svg = document.getElementById('public-concerns');
 
-      if (mapInitialize == true) {
-        comments_svg.setAttribute('aria-hidden', 'true');
-      }
+      // if (mapInitialize == true) {
+      //   publicconcerns_svg.setAttribute('aria-hidden', 'true');
+      // }
 
-      d3.json(comments_path).then(function(geojson) {
-        geojson_cm = geojson;
-        let feature_cm = g_cm.selectAll('path')
-                              .data(geojson_cm.features)
+      d3.json(publicconcerns_path).then(function(geojson) {
+        geojson_pc = geojson;
+        let feature_pc = g_pc.selectAll('path')
+                              .data(geojson_pc.features)
                               .enter()
                               .append('path');
 
@@ -1716,19 +2206,19 @@ const vizmaps = ()=> {
 
         // Reposition the SVG to cover the features.
         function reset() {
-          let bounds = path.bounds(geojson_cm),
+          let bounds = path.bounds(geojson_pc),
             topLeft = bounds[0],
             bottomRight = bounds[1];
 
-            svg_cm.attr('width', bottomRight[0] - topLeft[0])
+            svg_pc.attr('width', bottomRight[0] - topLeft[0])
                   .attr('height', bottomRight[1] - topLeft[1])
                   .style('left', topLeft[0] + 'px')
                   .style('top', topLeft[1] + 'px')
                   .style('overflow', 'visible');
 
-            g_cm.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+            g_pc.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
 
-            feature_cm.attr('d', path)
+            feature_pc.attr('d', path)
               .style('stroke', '#666666') //#bbbbbb
               .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
@@ -1744,28 +2234,28 @@ const vizmaps = ()=> {
             console.log(zoomLev);
 
             if (zoomLev <= 11) {
-                feature_cm.attr("d", path.pointRadius(4));
+                feature_pc.attr("d", path.pointRadius(4));
             } else if (zoomLev == 12) {
-                feature_cm.attr("d", path.pointRadius(5));
+                feature_pc.attr("d", path.pointRadius(5));
             } else if (zoomLev == 13) {
-                feature_cm.attr("d", path.pointRadius(6));
+                feature_pc.attr("d", path.pointRadius(6));
             } else if (zoomLev == 14) {
-                feature_cm.attr("d", path.pointRadius(7));
+                feature_pc.attr("d", path.pointRadius(7));
             } else if (zoomLev == 15) {
-                feature_cm.attr("d", path.pointRadius(8));
+                feature_pc.attr("d", path.pointRadius(8));
             } else if (zoomLev == 16) {
-                feature_cm.attr("d", path.pointRadius(9));
+                feature_pc.attr("d", path.pointRadius(9));
             } else if (zoomLev == 17) {
-                feature_cm.attr("d", path.pointRadius(10));
+                feature_pc.attr("d", path.pointRadius(10));
             } else if (zoomLev == 18) {
-                feature_cm.attr("d", path.pointRadius(11));
+                feature_pc.attr("d", path.pointRadius(11));
             } else if (zoomLev == 19) {
-                feature_cm.attr("d", path.pointRadius(12));
+                feature_pc.attr("d", path.pointRadius(12));
             } else {
-              feature_cm.attr("d", path.pointRadius(6));
+              feature_pc.attr("d", path.pointRadius(6));
             }
 
-            feature_cm.attr('d', path).on("mouseover", handleMouseOver)
+            feature_pc.attr('d', path).on("mouseover", handleMouseOver)
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
@@ -1780,13 +2270,13 @@ const vizmaps = ()=> {
               .duration(200);
 
               //tooltipType.innerText = i.properties.type;
-              tooltipContainerCM.setAttribute('aria-hidden','false');
-              tooltipComment.innerText = i.properties.comment;
+              // tooltipContainerCM.setAttribute('aria-hidden','false');
+              // tooltipComment.innerText = i.properties.comment;
 
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
-            tooltipContainerCM.setAttribute('aria-hidden','true');
+            //tooltipContainerCM.setAttribute('aria-hidden','true');
 
             d3.select(this)
               .transition()
@@ -1965,94 +2455,7 @@ const vizmaps = ()=> {
       })
     }, //aq
 
-    // bike routes (line)
-    bike_routes: function bike_routes() {
 
-      let projectPoint = function projectPoint(x, y) {
-        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
-          this.stream.point(point.x, point.y);
-      };
-
-      // Transform positions
-      let transform = d3.geoTransform({point: projectPoint}),
-        path = d3.geoPath().projection(transform);
-
-      let svg_br = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'bike-routes');
-      let g_br = svg_br.append('g').attr('class', 'leaflet-zoom-hide');
-
-      //filters go in defs element
-      let defs = svg_br.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      bikeroutes_svg = document.getElementById('bike-routes');
-
-      if (mapInitialize == true) {
-        bikeroutes_svg.setAttribute('aria-hidden', 'true');
-      }
-
-      d3.json(bikeroutes_path).then(function(geojson) {
-        geojson_br = geojson;
-        let feature_br = g_br.selectAll('path')
-                              .data(geojson_br.features)
-                              .enter()
-                              .append('path');
-
-        map.on('moveend', reset);
-        reset();
-
-        // Reposition the SVG to cover the features.
-        function reset() {
-          let bounds = path.bounds(geojson_br),
-            topLeft = bounds[0],
-            bottomRight = bounds[1];
-
-            svg_br.attr('width', bottomRight[0] - topLeft[0])
-                  .attr('height', bottomRight[1] - topLeft[1])
-                  .style('left', topLeft[0] + 'px')
-                  .style('top', topLeft[1] + 'px')
-                  .style('overflow', 'visible');
-
-            g_br.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
-
-            let zoomLev = map.getZoom();
-
-	            feature_br.attr('d', path)
-                   .style('stroke', 'rgb(170, 139, 21)')
-                   .style('opacity', 0.7)
-                   .style('stroke-width', ()=>{
-                   		if (zoomLev <= 11) {
-	                        return 1;
-	                    } else if (zoomLev == 12) {
-	                        return 1.5;
-	                    } else if (zoomLev == 13) {
-	                        return 2;
-	                    } else if (zoomLev == 14) {
-	                        return 3;
-	                    } else if (zoomLev == 15) {
-	                        return 4;
-	                    } else if (zoomLev == 16) {
-	                		return 5;
-	                    } else {
-	                    	return 1;
-	                    }
-                   })
-                   .style('fill', 'none')
-        		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
-
-
-          //remove loader
-          loader = document.getElementById('loader-bg');
-          loader.setAttribute('aria-hidden','true');
-
-        }// reset
-      })
-    }, //br
 
     // Parks and playgrounds (polygon)
     parks_playgrounds: function parks_playgrounds() {
@@ -2276,6 +2679,7 @@ const vizmaps = ()=> {
           //remove loader
           loader = document.getElementById('loader-bg');
           loader.setAttribute('aria-hidden','true');
+
         }// reset
       })
     }, //pp
@@ -2288,27 +2692,33 @@ const vizmaps = ()=> {
 
         mapLayers.basemap_buurt();
         mapLayers.basemap_stadsdeel();
+        mapLayers.basemap_outline();
+        mapLayers.bennekel();
         mapLayers.green_area();
         mapLayers.parks_playgrounds();
+        mapLayers.traffic();
         mapLayers.bike_routes();
+        mapLayers.running_routes();
         mapLayers.sports_facilities();
         mapLayers.medical_facilities();
         mapLayers.community_centers();
         mapLayers.sports_shops();
         mapLayers.grocery_stores();
         mapLayers.fast_foods();
-        mapLayers.comments();
+        mapLayers.public_concerns();
         mapLayers.air_quality();
 
   }
 
   changeBasemap = function changeBasemap(value){
     baseStatus = value;
-    //console.log(value);
+    console.log(value);
     if (value == 'stadsdeel'){
       basebuurt_svg.setAttribute('aria-hidden', 'true');
+      console.log(basebuurt_svg);
       basestadsdeel_svg.setAttribute('aria-hidden', 'false');
       bindDataBS(selectedAttribute, 'stadsdeel');
+      console.log(basestadsdeel_svg);
     } else if (value == 'buurt') {
       basebuurt_svg.setAttribute('aria-hidden', 'false');
       basestadsdeel_svg.setAttribute('aria-hidden', 'true');
@@ -2327,7 +2737,12 @@ const vizmaps = ()=> {
     } else if (baseStatus == 'stadsdeel') {
       bindDataBS(newAttr, baseStatus);
     }
+
+    basemapAttr.setAttribute('aria-serected', true);
+    basemapInfo.classList.add('active');
   };
+
+
 
   // addOverlay test
   addOverlay = function (status, value) {
