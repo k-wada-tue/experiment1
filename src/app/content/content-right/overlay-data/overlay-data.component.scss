@@ -121,6 +121,42 @@
           margin-top: 8px;
           font-size: 12px;
           color: #222;
+          line-height: 16px;
+          &_legend {
+            margin-top: 10px;
+            list-style: none;
+            padding-inline-start: 12px;
+            &_each {
+              margin-top: 6px;
+              &_circle {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                display: inline-block;
+                &.noise_problem {
+                  background-color: rgb(253,192,134);
+                }
+                &.dirty_pavement {
+                  background-color: rgb(56,108,176);
+                }
+                &.sports_accomodation {
+                  background-color: rgb(255,255,153);
+                }
+                &.playground_equipment {
+                  background-color: rgb(127,201,127);
+                }
+                &.unsafe_traffic {
+                  background-color: rgb(240,2,127);
+                }
+                &.bad_odor {
+                  background-color: rgb(190,174,212);
+                }
+              }
+              &_label {
+                margin-left: 6px;
+              }
+            }
+          }
         }
       }
       &_info {

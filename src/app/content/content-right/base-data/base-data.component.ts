@@ -20,7 +20,7 @@ function trackBasemap(value) {
     console.log(value);
     gtag('event', 'click', {
       'event_category': value + '_selected',
-      'event_label': value,
+      'event_label': 'Basemap',
       //'event_status': 'checkbox_' + checkStatus,
       'value': 0 })
 }
@@ -31,7 +31,7 @@ function trackBaseAttr(value) {
     console.log(value);
     gtag('event', 'click', {
       'event_category': value + '_selected',
-      'event_label': value,
+      'event_label': 'Basemap attribute',
       //'event_status': 'checkbox_' + checkStatus,
       'value': 0 })
 }

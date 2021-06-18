@@ -57,6 +57,8 @@ let basebuurt_svg;
 let basestadsdeel_svg;
 let bennekel_svg;
 
+let buurt_each;
+
 //function to change attribute, color filling and legend on the base maps
 let changeAttr;
 
@@ -87,9 +89,16 @@ let tooltipPM1;
 let tooltipPM25;
 let tooltipPM10;
 
-// Tooltip DOM (comments)
-let tooltipContainerCM;
-let tooltipComment;
+// Tooltip DOM (public concerns)
+let tooltipContainerPC;
+let tooltipConcernsTopic;
+let tooltipConcernsTime;
+
+// Tooltip DOM (traffic)
+let tooltipContainerTR;
+let tooltipSpeedLimit;
+
+let tooltipContainerBK;
 
 let sidebarjs;
 let sideContent;
@@ -122,6 +131,10 @@ let copiedPath;
 let basemapAttr;
 let basemapInfo;
 
+let pageHinder;
+let benekelModal;
+let benekelModalClose;
+
 window.onload = function(){
 
   tooltipContainerBM = document.getElementById('basemap-tooltip');
@@ -139,11 +152,29 @@ window.onload = function(){
 
   tooltipMoreData = document.getElementById('basemap-tooltip-moreData');
 
-  tooltipContainerCM = document.getElementById('comment-tooltip');
-  tooltipComment = document.getElementById('data-tooltip-comment');
+  tooltipContainerPC = document.getElementById('publicconcerns-tooltip');
+  tooltipConcernsTopic = document.getElementById('overlay-tooltip-topic');
+  tooltipConcernsTime = document.getElementById('overlay-tooltip-time');
 
+  tooltipContainerTR = document.getElementById('traffic-tooltip');
+  tooltipSpeedLimit = document.getElementById('overlay-tooltip-speedlimit');
+
+  tooltipContainerBK = document.getElementById('bennekel-tooltip');
+
+  pageHinder = document.getElementById('page-hinder');
+  benekelModal = document.getElementById('Bennekel-modal');
+  benekelModalClose = document.getElementById('Bennekel-modal-close');
   basemapAttr = document.getElementById('basemap-attr');
   basemapInfo = document.getElementById('basemap-info');
+
+
+  benekelModalClose.addEventListener('click', () => {
+    benekelModal.setAttribute("aria-hidden", "true");
+    setTimeout(()=>{
+      pageHinder.setAttribute("aria-hidden", "true");
+     }, 500);
+
+  });
 
   const observer = new MutationObserver(records => {
     if (!basemapAttr.classList.contains('mat-focused')) {
@@ -173,8 +204,11 @@ window.onload = function(){
     tooltipContainerAQ.style.left = xLocation + "px";
     tooltipContainerAQ.style.top = yLocation + "px";
 
-    tooltipContainerCM.style.left = xLocation + "px";
-    tooltipContainerCM.style.top = yLocation + "px";
+    tooltipContainerPC.style.left = xLocation + "px";
+    tooltipContainerPC.style.top = yLocation + "px";
+
+    tooltipContainerBK.style.left = xLocation + "px";
+    tooltipContainerBK.style.top = yLocation + "px";
 
   });
 
@@ -233,6 +267,7 @@ const basebuurt_path = dataPath + 'edh_buurt_base.json';
 const basestadsdeel_path = dataPath + 'edh_stadsdeel_base.json';
 const outline_path = dataPath + 'edh_outline.json';
 const bennekel_path = dataPath + 'bennekel.json';
+const bennekeldata_path = dataPath + 'bennekeldata.json';
 
 //Line
 const traffic_path = dataPath + 'traffic.json';
@@ -273,7 +308,11 @@ const apiReq_outline = fetch(outline_path).then((response)=> {
 });
 
 //Fetch bennekel data
-const apiReq_bennekel = fetch(outline_path).then((response)=> {
+const apiReq_bennekel = fetch(bennekel_path).then((response)=> {
+  return response.json();
+});
+
+const apiReq_bennekeldata = fetch(bennekeldata_path).then((response)=> {
   return response.json();
 });
 
@@ -561,7 +600,7 @@ const vizmaps = ()=> {
               feature_bb.attr('d', path)
                 .style('stroke', 'rgb(187,187,187)') //#bbbbbb
                 .style('stroke-width', '1px')
-                .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+                .attr('class', 'leaflet-interactive')// Release leaflet's css pointer-event:none
                 .style('cursor', 'pointer')
                 .style('fill', (d)=> {
                   if (d.properties[selectedAttribute] >= interval6) {
@@ -583,7 +622,7 @@ const vizmaps = ()=> {
 
                 feature_bb.attr('d', path).on("mouseover", handleMouseOver)
                   .on("mouseout", handleMouseOut)
-                  .on("click", handleMouseClick)
+                  .on("click", handleMouseClick);
 
                 resolve(p);
             })
@@ -607,7 +646,7 @@ const vizmaps = ()=> {
           //}
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
+            console.log('mouseover');
             // console.log(d);
             // console.log(i);
             tooltipMoreData.setAttribute('aria-hidden','false');
@@ -685,93 +724,93 @@ const vizmaps = ()=> {
                   selectedNeighbor.innerText = selectedDemoData.Buurten;
 
                   if (selectedDemoData.total_population !="") {
-                    totalpop.innerText = selectedDemoData.total_population;
+                    totalpop.innerText = "- " + selectedDemoData.total_population;
                   } else {
-                    totalpop.innerText = "No data"
+                    totalpop.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.men_2020 !="") {
-                    men.innerText = selectedDemoData.men_2020 + " %";
+                    men.innerText = "- " + selectedDemoData.men_2020 + " %";
                   } else {
-                    men.innerText = "No data"
+                    men.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.women_2020 !="") {
-                    women.innerText = selectedDemoData.women_2020 + " %";
+                    women.innerText = "- " + selectedDemoData.women_2020 + " %";
                   } else {
-                    women.innerText = "No data"
+                    women.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData['0-14_2020'] !="") {
-                    age0_14.innerText = selectedDemoData['0-14_2020'] + " %";
+                    age0_14.innerText = "- " + selectedDemoData['0-14_2020'] + " %";
                   } else {
-                    age0_14.innerText = "No data"
+                    age0_14.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData['15-64_2020'] !="") {
-                    age15_64.innerText = selectedDemoData['15-64_2020'] + " %";
+                    age15_64.innerText = "- " + selectedDemoData['15-64_2020'] + " %";
                   } else {
-                    age15_64.innerText = "No data"
+                    age15_64.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData['65andAbove_2020'] !="") {
-                    age65.innerText = selectedDemoData['65andAbove_2020'] + " %";
+                    age65.innerText = "- " + selectedDemoData['65andAbove_2020'] + " %";
                   } else {
-                    age65.innerText = "No data"
+                    age65.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.Dutch_2020 !="") {
-                    dutch.innerText = selectedDemoData.Dutch_2020 + " %";
+                    dutch.innerText = "- " + selectedDemoData.Dutch_2020 + " %";
                   } else {
-                    dutch.innerText = "No data"
+                    dutch.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.immigrants_2020 !="") {
-                    immigrants.innerText = selectedDemoData.immigrants_2020 + " %";
+                    immigrants.innerText = "- " + selectedDemoData.immigrants_2020 + " %";
                   } else {
-                    immigrants.innerText = "No data"
+                    immigrants.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.single_2019 !="") {
-                    single.innerText = selectedDemoData.single_2019 + " %";
+                    single.innerText = "- " + selectedDemoData.single_2019 + " %";
                   } else {
-                    single.innerText = "No data"
+                    single.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.w_kids_2019 !="") {
-                    wKids.innerText = selectedDemoData.w_kids_2019 + " %";
+                    wKids.innerText = "- " + selectedDemoData.w_kids_2019 + " %";
                   } else {
-                    wKids.innerText = "No data"
+                    wKids.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.avg_income_person_2019 !="") {
-                    income.innerText = selectedDemoData.avg_income_person_2019 + " EUR";
+                    income.innerText = "- " + selectedDemoData.avg_income_person_2019 + " EUR";
                   } else {
-                    income.innerText = "No data"
+                    income.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.foot_2019 !="") {
-                    foot.innerText = selectedDemoData.foot_2019 + " %";
+                    foot.innerText = "- " + selectedDemoData.foot_2019 + " %";
                   } else {
-                    foot.innerText = "No data"
+                    foot.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.fiets_2019 !="") {
-                    bike.innerText = selectedDemoData.fiets_2019 + " %";
+                    bike.innerText = "- " + selectedDemoData.fiets_2019 + " %";
                   } else {
-                    bike.innerText = "No data"
+                    bike.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.auto_2019 !="") {
-                    auto.innerText = selectedDemoData.auto_2019 + " %";
+                    auto.innerText = "- " + selectedDemoData.auto_2019 + " %";
                   } else {
-                    auto.innerText = "No data"
+                    auto.innerText = "- " + "No data"
                   };
 
                   if (selectedDemoData.transit_2019 !="") {
-                    transit.innerText = selectedDemoData.transit_2019 + " %";
+                    transit.innerText = "- " + selectedDemoData.transit_2019 + " %";
                   } else {
-                    transit.innerText = "No data"
+                    transit.innerText = "- " + "No data"
                   };
 
                   break;
@@ -976,6 +1015,7 @@ const vizmaps = ()=> {
                   .style('stroke-width', '3px')
                   .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
                   .style('fill', "none")
+                  .style('pointer-events', "none !important")
                   .style('opacity', '0.9');
 
           //remove loader
@@ -1039,7 +1079,7 @@ const vizmaps = ()=> {
               .style('opacity', '0.7');
 
               feature_bk.attr('d', path).on("mouseover", handleMouseOver)
-                .on("mouseout", handleMouseOut);
+                .on("mouseout", handleMouseOut).on("click", handleMouseClick);
 
           function handleMouseOver(d, i) {
             // console.log('mouseover');
@@ -1052,10 +1092,10 @@ const vizmaps = ()=> {
               .style('stroke', 'rgb(0,0,0)')
               .duration(200);
 
-              // tooltipContainerBM.style.left = xLocation + "px";
+              //tooltipContainerBK.style.left = xLocation + "px";
               // tooltipContainerBM.style.top = yLocation + "px";
               // tooltipPlace.innerText = i.properties.districts;
-              // tooltipContainerBM.setAttribute('aria-hidden','false');
+              tooltipContainerBK.setAttribute('aria-hidden','false');
 
 
               // if (i.properties[selectedAttribute] != null) {
@@ -1066,13 +1106,21 @@ const vizmaps = ()=> {
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
-            // tooltipContainerBM.setAttribute('aria-hidden','true');
+            tooltipContainerBK.setAttribute('aria-hidden','true');
 
             d3.select(this)
               .transition()
               .style('opacity', 0.7)
               .style('stroke', 'rgb(187,187,187)')
               .duration(200);
+          }
+
+          function handleMouseClick (d,i) {
+            pageHinder.setAttribute("aria-hidden", "false");
+            setTimeout(()=>{
+              benekelModal.setAttribute("aria-hidden", "false");
+             }, 500);
+
           }
 
           //remove loader
@@ -1176,8 +1224,46 @@ const vizmaps = ()=> {
 	                    }
                    })
                    .style('fill', 'none')
+                   .style('pointer-events', 'none')
+                   .style('cursor', 'pointer')
         		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
 
+                   feature_tr.attr('d', path).on("mouseover", handleMouseOver)
+                    .on("mouseout", handleMouseOut);
+
+
+                  function handleMouseOver(d, i) {
+                  console.log('mouseover tr');
+                  // console.log(d);
+                  // console.log(i);
+
+                  d3.select(this)
+                    .transition()
+                    .style('opacity', 1)
+                    .style('stroke', 'rgb(0,0,0)')
+                    .duration(200);
+
+
+                    //tooltip.innerText = i.properties.districts;
+                    tooltipContainerTR.setAttribute('aria-hidden','false');
+
+
+                    // if (i.properties[selectedAttribute] != null) {
+                    //   tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
+                    // } else {
+                    //   tooltipValue.innerText = 'No Data';
+                    // }
+                } //handleMouseOver
+
+                function handleMouseOut (d, i) {
+                  tooltipContainerTR.setAttribute('aria-hidden','true');
+
+                  d3.select(this)
+                    .transition()
+                    .style('opacity', 0.7)
+                    .style('stroke', 'rgb(187,187,187)')
+                    .duration(200);
+                }
 
           //remove loader
           loader = document.getElementById('loader-bg');
@@ -2143,18 +2229,20 @@ const vizmaps = ()=> {
               .style('stroke-width', '1px')
               .duration(200);
 
-              tooltipType.innerText = i.properties.type;
-              tooltipContainerOL.setAttribute('aria-hidden','false');
 
-              if (i.properties.name !== null) {
-                tooltipName.innerText = i.properties.name;
-              } else {
-                tooltipName.innerText = 'Not available';
-              }
+              // tooltipConcernsTopic.innerText = i.properties.type;
+              // tooltipConcernsTime =
+              tooltipContainerPC.setAttribute('aria-hidden','false');
+
+              // if (i.properties.name !== null) {
+              //   tooltipName.innerText = i.properties.name;
+              // } else {
+              //   tooltipName.innerText = 'Not available';
+              // }
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
-            tooltipContainerOL.setAttribute('aria-hidden','true');
+            tooltipContainerPC.setAttribute('aria-hidden','true');
 
             d3.select(this)
               .transition()
@@ -2190,9 +2278,9 @@ const vizmaps = ()=> {
 
       let publicconcerns_svg = document.getElementById('public-concerns');
 
-      // if (mapInitialize == true) {
-      //   publicconcerns_svg.setAttribute('aria-hidden', 'true');
-      // }
+      if (mapInitialize == true) {
+        publicconcerns_svg.setAttribute('aria-hidden', 'true');
+      }
 
       d3.json(publicconcerns_path).then(function(geojson) {
         geojson_pc = geojson;
@@ -2223,7 +2311,21 @@ const vizmaps = ()=> {
               .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
-              .style('fill', 'rgb(251,154,153)')
+              .style('fill', (d)=>{
+                if (d.properties.onderwerp == 'Noise problem') {
+                  return 'rgb(253,192,134)';
+                } else if (d.properties.onderwerp == 'Dirty pavement') {
+                    return 'rgb(56,108,176)';
+                } else if (d.properties.onderwerp == 'Sports accommodation') {
+                    return 'rgb(255,255,153)';
+                } else if (d.properties.onderwerp == 'Playground equipment') {
+                    return 'rgb(127,201,127)';
+                } else if (d.properties.onderwerp == 'Unsafe traffic') {
+                    return 'rgb(240,2,127)';
+                } else if (d.properties.onderwerp == 'Bad odor') {
+                      return 'rgb(190,174,212)';
+                }
+              })
               //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
@@ -2259,7 +2361,7 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
+            console.log('mouseover');
             // console.log(d);
             // console.log(i);
 
@@ -2269,14 +2371,16 @@ const vizmaps = ()=> {
               .style('stroke-width', '1px')
               .duration(200);
 
-              //tooltipType.innerText = i.properties.type;
-              // tooltipContainerCM.setAttribute('aria-hidden','false');
-              // tooltipComment.innerText = i.properties.comment;
+              tooltipConcernsTopic.innerText = i.properties.onderwerp;
+              tooltipConcernsTime.innerText = i.properties.aangemaakt;
+              tooltipContainerPC.setAttribute('aria-hidden','false');
+
+
 
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
-            //tooltipContainerCM.setAttribute('aria-hidden','true');
+            tooltipContainerPC.setAttribute('aria-hidden','true');
 
             d3.select(this)
               .transition()
@@ -2771,4 +2875,127 @@ function initializeMap() {
 // console.re.log('remote log test from js');
 
 
+//Bennekel data viz
+d3.json(bennekeldata_path).then(function(data) {
+  console.log(data);
+  br1Data = data;
 
+
+  //sort bars based on value
+      data = data.sort(function (a, b) {
+          return d3.ascending(a.Number, b.Number);
+      })
+
+      //set up svg using margin conventions - we'll need plenty of room on the left for labels
+      let margin = {
+          top: 120,
+          right: 40,
+          bottom: 20,
+          left: 280
+      };
+
+      let width = 600 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
+
+      let svg = d3.select("#Bennekel-modal_inner").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      let x = d3.scaleLinear()
+          .rangeRound([0, width])
+          .domain([0, d3.max(data, function (d) {
+              return d.Number;
+          })]);
+
+      let y = d3.scaleBand()
+          .rangeRound([height, 0], .1)
+          .domain(data.map(function (d) {
+              return d.Reasons;
+          }));
+
+      //make y axis to show bar names
+      let yAxis = d3.axisLeft(y)
+          .scale(y)
+          //no tick marks
+          .tickSize(0)
+
+
+
+
+      let xAxis = d3.axisBottom(x);
+
+
+      let gy = svg.append("g")
+          .attr("class", "yAxis")
+          .call(yAxis);
+
+          d3.select(".yAxis").select("path").remove();
+
+          d3.select(".yAxis")
+            .style("font-size", "12px")
+            .style("color", "#222")
+            .attr("transform", "translate(-4,-4)");
+
+
+
+      // let gx = svg.append("g")
+      //     .attr("class", "xAxis")
+      //     .call(xAxis);
+
+          // d3.select(".xAxis")
+          // .attr("transform", "translate(0,480)");
+
+      let bars = svg.selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("g")
+
+      //append rects
+      bars.append("rect")
+          .attr("class", "bar")
+          .attr("y", function (d) {
+              return y(d.Reasons);
+          })
+          .attr("height", (y.bandwidth() - 6))
+          .attr("x", 0)
+          .style("fill", "#5f89ad")
+          .attr("width", function (d) {
+              return x(d.Number);
+          });
+
+      //add a value label to the right of each bar
+      bars.append("text")
+          .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+              return (y(d.Reasons) + 12);
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function (d) {
+                return (x(d.Number) + 4);
+            })
+            .text(function (d) {
+                return d.Number;
+            });
+
+
+        svg.selectAll(".label")
+        .style("fill","#5f89ad");
+          // .attr("x", "-10px")
+          // .attr("dy", "2px");
+        // .attr("y", function(d) { return y(d.Reasons) + 1; }).attr('dy', '-0.4em')
+        // //y position of the label is halfway down the bar
+        // .attr("y", function (d) {
+        //     return y(d.Reasons) + y.bandwidth() / 2 + 4;
+        // })
+        // //x position is 3 pixels to the right of the bar
+        // .attr("x", function (d) {
+        //     return x(d.Number) + 3;
+        // });
+
+    // vizmaps('mp4', 'Gray', 'initialize');
+    // loading[6] = 'mp4';
+
+});

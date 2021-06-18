@@ -32,6 +32,7 @@
     display: block;
     margin-top: 12px;
     color: #666;
+    line-height: 16px;
   }
   .demography {
     list-style-type: none;
@@ -66,3 +67,40 @@
   }
 }
 
+.panel-title {
+  font-weight: bold;
+  font-size: 16px;
+  color: #222;
+  //padding-left: 6px;
+}
+
+.mat-accordion .mat-expansion-panel:first-of-type {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+}
+.mat-accordion .mat-expansion-panel:last-of-type {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: none;
+}
+
+.mat-expansion-panel-header {
+  padding: 0 16px 0 0;
+}
+
+.mat-expansion-panel {
+  background: none;
+  border-bottom: 1px solid #999;
+}
+
+.mat-expansion-panel-header.mat-expanded {
+  height: 32px;
+  //padding-top: 4px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 0 0 0 !important;
+}

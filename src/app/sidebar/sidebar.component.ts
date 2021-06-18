@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild} from '@angular/core';
+import { MatAccordion } from '@angular/material/expansion';
 
 @Component ({
   selector: 'app-sidebar',
@@ -8,5 +9,6 @@ import { Component } from '@angular/core';
 
 
 export class SidebarComponent {
+  @ViewChild( MatAccordion ) accordion: MatAccordion;
 
 }
