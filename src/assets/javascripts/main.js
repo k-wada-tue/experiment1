@@ -680,6 +680,16 @@ const vizmaps = ()=> {
           }
 
           function handleMouseClick (d, i) {
+
+            function sendGA (){
+              console.log('ga log sent');
+              gtag('event', 'click', {
+                'event_category': i.properties.neighbor + '_clicked',
+                'event_label': 'Neighborhoods',
+                //'event_status': 'checkbox_' + checkStatus,
+                'value': 0 })
+            };
+            sendGA ();
             //console.log('clicked');
             console.log(i.properties.neighbor);
             //console.log(d);
