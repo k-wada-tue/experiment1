@@ -35,23 +35,6 @@ let mapInitialize; //If map was rendered for the first time (true/false)
 // Object in vizmap function contains all functions of rendering map layers
 let mapLayers;
 
-// Variables to store geojson data
-let geojson_bb; //basemap buurt
-let geojson_bs; //basemap stadsdeel
-let geojson_sf; //overlay sports facilities
-let geojson_mf; //overlay medical facilities
-let geojson_cc; //overlay community centers
-let geojson_ss; //overlay sports shops
-let geojson_gs; //overlay groceries
-let geojson_ff; //overlay fast food
-let geojson_br; //overlay bike routes
-let geojson_pp; //overlay bike routes
-let geojson_ga; //overlay pp
-let geojson_aq;
-let geojson_cm;
-let geojson_ol; //Eindhoven outline
-
-
 // SVG map layers
 let basebuurt_svg;
 let basestadsdeel_svg;
@@ -98,8 +81,10 @@ let tooltipConcernsTime;
 let tooltipContainerTR;
 let tooltipSpeedLimit;
 
+// Tooltip DOM (Benekel)
 let tooltipContainerBK;
 
+//Sidebar
 let sidebarjs;
 let sideContent;
 let clickedPathActive;
@@ -109,34 +94,53 @@ clickedPathActive = false;
 let selectedNeighbor;
 let totalpop;
 let men;
+let men_figure;
 let women;
+let women_figure;
 let age0_14;
+let age0_14_figure;
 let age15_64;
+let age15_64_figure;
 let age65;
+let age65_figure;
 let dutch;
+let dutch_figure;
 let immigrants;
+let immigrants_figure;
 let single;
+let single_figure;
 let wKids;
+let wKids_figure;
 let income;
+let income_figure;
 
 let foot;
+let foot_figure;
 let bike;
+let bike_figure;
 let auto;
+let auto_figure;
 let transit;
+let transit_figure;
 
+// Move DOM(each neighborhood) position when clicked
 let gElem;
 let clickedPath;
 let copiedPath;
 
+// For coloring info icon next to the basemap attribute selection
 let basemapAttr;
 let basemapInfo;
 
+//Benekel information modal
 let pageHinder;
 let benekelModal;
 let benekelModalClose;
 
+//After all DOM is loaded
 window.onload = function(){
 
+  //Assign DOMs to each variable
   tooltipContainerBM = document.getElementById('basemap-tooltip');
   tooltipPlace = document.getElementById('basemap-tooltip-place');
   tooltipValue = document.getElementById('basemap-tooltip-value');
@@ -161,32 +165,6 @@ window.onload = function(){
 
   tooltipContainerBK = document.getElementById('bennekel-tooltip');
 
-  pageHinder = document.getElementById('page-hinder');
-  benekelModal = document.getElementById('Bennekel-modal');
-  benekelModalClose = document.getElementById('Bennekel-modal-close');
-  basemapAttr = document.getElementById('basemap-attr');
-  basemapInfo = document.getElementById('basemap-info');
-
-
-  benekelModalClose.addEventListener('click', () => {
-    benekelModal.setAttribute("aria-hidden", "true");
-    setTimeout(()=>{
-      pageHinder.setAttribute("aria-hidden", "true");
-     }, 500);
-
-  });
-
-  const observer = new MutationObserver(records => {
-    if (!basemapAttr.classList.contains('mat-focused')) {
-      basemapInfo.classList.remove('active');
-    }
-  })
-
-  observer.observe(basemapAttr, {
-    attributes: true,
-    attributeFilter: ['class']
-  })
-
   // mouse x y position
   document.addEventListener('mousemove', (e) => {
     //e = e || window.event;
@@ -210,6 +188,9 @@ window.onload = function(){
     tooltipContainerBK.style.left = xLocation + "px";
     tooltipContainerBK.style.top = yLocation + "px";
 
+    tooltipContainerTR.style.left = xLocation + "px";
+    tooltipContainerTR.style.top = yLocation + "px";
+
   });
 
   // Create sidebarjs instance
@@ -228,32 +209,70 @@ window.onload = function(){
     clickedPath = undefined;
   })
 
-  console.log('loaded');
   sideContent = document.getElementById('sideContent');
-  console.log(sideContent);
-  //sidebarjs.close();
+  //console.log(sideContent);
+
   sideContent.setAttribute('aria-hidden', 'false');
 
   selectedNeighbor = document.getElementById('selected-neighbor');
   totalpop = document.getElementById('demography-totalpop');
   men = document.getElementById('demography-men');
+  men_figure = document.getElementById('demography-men-figure');
   women = document.getElementById('demography-women');
+  women_figure = document.getElementById('demography-women-figure');
   age0_14 = document.getElementById('demography-age0-14');
+  age0_14_figure = document.getElementById('demography-age0-14-figure');
   age15_64 = document.getElementById('demography-age15-64');
+  age15_64_figure = document.getElementById('demography-age15-64-figure');
   age65 = document.getElementById('demography-age65');
+  age65_figure = document.getElementById('demography-age65-figure');
   dutch = document.getElementById('demography-dutch');
+  dutch_figure = document.getElementById('demography-dutch-figure');
   immigrants = document.getElementById('demography-immigrants');
+  immigrants_figure = document.getElementById('demography-immigrants-figure');
   single = document.getElementById('demography-single');
+  single_figure = document.getElementById('demography-single-figure');
   wKids = document.getElementById('demography-wKids');
+  wKids_figure = document.getElementById('demography-wKids-figure');
   income = document.getElementById('demography-income');
 
   foot = document.getElementById('demography-foot');
+  foot_figure = document.getElementById('demography-foot-figure');
   bike = document.getElementById('demography-bike');
+  bike_figure = document.getElementById('demography-bike-figure');
   auto = document.getElementById('demography-auto');
+  auto_figure = document.getElementById('demography-auto-figure');
   transit = document.getElementById('demography-transit');
+  transit_figure = document.getElementById('demography-transit-figure');
 
   gElem = basebuurt_svg.firstChild;
-  console.log(gElem);
+  // console.log(gElem);
+
+  //Benekel modal
+  pageHinder = document.getElementById('page-hinder');
+  benekelModal = document.getElementById('Bennekel-modal');
+  benekelModalClose = document.getElementById('Bennekel-modal-close');
+
+  benekelModalClose.addEventListener('click', () => {
+    benekelModal.setAttribute("aria-hidden", "true");
+    setTimeout(()=>{
+      pageHinder.setAttribute("aria-hidden", "true");
+     }, 500);
+  });
+
+  //Coloring info icon for basemap attribute
+  basemapAttr = document.getElementById('basemap-attr');
+  basemapInfo = document.getElementById('basemap-info');
+
+  const observer = new MutationObserver(records => {
+  if (!basemapAttr.classList.contains('mat-focused')) {
+    basemapInfo.classList.remove('active');
+  }
+  })
+  observer.observe(basemapAttr, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
 
 }
 
@@ -289,8 +308,6 @@ const airquality_path = dataPath + 'airquality_edh.json';
 const publicconcerns_path = dataPath + 'public_concerns.json';
 // demography data for each nieghborhood
 const demography_path = dataPath + 'edh_demography.json';
-
-
 
 //Fetch base buurten data
 const apiReq_buurt = fetch(basebuurt_path).then((response)=> {
@@ -391,20 +408,16 @@ const apiReq_publicconcerns = fetch(publicconcerns_path).then((response)=> {
 // Promise (Step1): array creation of buurt data
 const pushArray = (attribute, whichbase)=> {
   return new Promise((resolve, reject) => {
-    // baseStatus = whichbase;
-    //console.log('selected basemap is ' + baseStatus);
-    //console.log('called basemap is ' + whichbase);
+
     selectedAttribute = whichbase;
-    //console.log(selectedAttribute);
+
     if (selectedAttribute == 'buurt') {
-      //console.log('go for buurt');
       apiReq_buurt.then((data)=> {
         baseJson = data;
         dataArray = []; //Clear dataArray
         checkAttribute();
       });
     } else if (selectedAttribute == 'stadsdeel') {
-      //console.log('go for stadsdeel');
       apiReq_stadsdeel.then((data)=> {
         baseJson = data;
         dataArray = []; //Clear dataArray
@@ -414,12 +427,8 @@ const pushArray = (attribute, whichbase)=> {
 
     //In case the dataArray is excuted before geeting attribute value
     function checkAttribute() {
-      //console.log('checking attribute...');
-      //console.log(attribute);
       if(attribute != 'undefined') {
-        //console.log('move forward');
         selectedAttribute = attribute;
-        //console.log(selectedAttribute);
         createArray();
       } else {
         window.setTimeout(checkAttribute, 500); /* repeat (wait) until data is loaded */
@@ -427,12 +436,10 @@ const pushArray = (attribute, whichbase)=> {
     }
 
     function createArray() {
-      //console.log('creating array...');
       let dataLength = baseJson.features.length;
       for (let i = 0; i < dataLength; i++) {
         dataArray.push(baseJson.features[i].properties[selectedAttribute]);
       }
-      //console.log(dataArray);
     }
     resolve();
   })
@@ -441,7 +448,6 @@ const pushArray = (attribute, whichbase)=> {
 // Promise (Step2): Calculation of values for map color fill and legend
 const legendCalc = (p) => {
   return new Promise((resolve, reject) => {
-    // console.log("legend calc");
     let filteredLegend = dataArray.filter(function (rm) {
       return rm != null;
     });
@@ -450,12 +456,7 @@ const legendCalc = (p) => {
     const aryMin = function (a, b) {return Math.min(a, b);}
     let max = filteredLegend.reduce(aryMax); // => 10
     let min = filteredLegend.reduce(aryMin); // => 1
-
-    // console.log(max);
-    // console.log(min);
-
     let division = Math.round((max - min)/4);
-    //console.log(division);
 
     interval0 = min;
     interval1 = (min + division) - 1;
@@ -465,19 +466,9 @@ const legendCalc = (p) => {
     interval5 = (min + division*3) - 1;
     interval6 = min + division*3;
 
-    // console.log(interval0);
-    // console.log(interval1);
-    // console.log(interval2);
-    // console.log(interval3);
-    // console.log(interval4);
-    // console.log(interval5);
-    // console.log(interval6);
-
     resolve();
   })
 };
-
-// Promise (Step3): filling colors on the map are different with buurt and stadsdeel basemap and written inside of the d3 code
 
 // Promise (Step4): create legend
 const createLegend = (p) => {
@@ -530,7 +521,6 @@ const onRejectted = (p)=>{
   console.log("Promise Error",p);
 }
 
-
 // Map visualization function
 const vizmaps = ()=> {
 
@@ -571,7 +561,7 @@ const vizmaps = ()=> {
       basebuurt_svg = document.getElementById('basemap-buurt');
 
       d3.json(basebuurt_path).then(function(geojson) {
-        geojson_bb = geojson;
+        let geojson_bb = geojson;
         let feature_bb = g_bb.selectAll('path')
                               .data(geojson_bb.features)
                               .enter()
@@ -629,8 +619,7 @@ const vizmaps = ()=> {
           };
 
           bindDataBB = function(attr, whichbase) {
-            // console.log(attr);
-            // console.log(whichbase);
+
             Promise.resolve()
             .then(pushArray.bind(this, attr, whichbase))
             //depression, disease, h_drinker, healthy, illness, lonliness, m_drinker, m_exercise, neighbor, overweight, physical_p, smoker, : 61
@@ -640,15 +629,10 @@ const vizmaps = ()=> {
             .catch(onRejectted);
           }
 
-          //console.log(mapInitialize);
-          //if (mapInitialize == true) {
           bindDataBB(basedataDefault, 'buurt');
-          //}
 
           function handleMouseOver(d, i) {
-            console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
+
             tooltipMoreData.setAttribute('aria-hidden','false');
 
             d3.select(this)
@@ -657,8 +641,6 @@ const vizmaps = ()=> {
               .style('opacity', 1)
               .duration(200);
 
-              // tooltipContainerBM.style.left = xLocation + "px";
-              // tooltipContainerBM.style.top = yLocation + "px";
               tooltipPlace.innerText = i.properties.neighbor;
               tooltipContainerBM.setAttribute('aria-hidden','false');
 
@@ -686,148 +668,152 @@ const vizmaps = ()=> {
               gtag('event', 'click', {
                 'event_category': i.properties.neighbor + '_clicked',
                 'event_label': 'Neighborhoods',
-                //'event_status': 'checkbox_' + checkStatus,
                 'value': 0 })
             };
             sendGA ();
-            //console.log('clicked');
-            console.log(i.properties.neighbor);
-            //console.log(d);
+
             let clickedNeighbor = i.properties.neighbor;
 
-            console.log(clickedPath);
             if (clickedPath == undefined && clickedPathActive == false) {
-              d3.select(this).classed('clickedNeighbor',true);
-              clickedPath = document.getElementsByClassName('clickedNeighbor');
-              console.log(clickedPath[0]);
-              gElem.appendChild(clickedPath[0]);
-              clickedPathActive = true;
-            } else if (clickedPath != undefined && clickedPathActive == true){
-              clickedPath[0].classList.remove('clickedNeighbor');
-              //console.log(gElem.lastChild);
-              d3.select(this).classed('clickedNeighbor',true);
-              clickedPath = document.getElementsByClassName('clickedNeighbor');
-              console.log(clickedPath[0]);
-              gElem.appendChild(clickedPath[0]);
-            } else if (clickedPath != undefined && clickedPathActive == false) {
-              //clickedPath[0].classList.remove('clickedNeighbor');
-              //console.log(gElem.lastChild);
-              d3.select(this).classed('clickedNeighbor',true);
-              clickedPath = document.getElementsByClassName('clickedNeighbor');
-              console.log(clickedPath[0]);
-              gElem.appendChild(clickedPath[0]);
-              clickedPathActive = true;
-            }
 
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              gElem.appendChild(clickedPath[0]);
+              clickedPathActive = true;
+
+            } else if (clickedPath != undefined && clickedPathActive == true){
+
+              clickedPath[0].classList.remove('clickedNeighbor');
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              gElem.appendChild(clickedPath[0]);
+
+            } else if (clickedPath != undefined && clickedPathActive == false) {
+
+              d3.select(this).classed('clickedNeighbor',true);
+              clickedPath = document.getElementsByClassName('clickedNeighbor');
+              gElem.appendChild(clickedPath[0]);
+              clickedPathActive = true;
+
+            }
 
             apiReq_demography.then((data)=> {
               let demoData = data;
               let selectedDemoData;
               let demoDataLength = data.length;
-              // console.log(demoDataLength);
-              // console.log(demoData);
+
               for (let i = 0; i < demoDataLength; i++) {
                 if (demoData[i].Buurten == clickedNeighbor) {
                   selectedDemoData = demoData[i];
-                  // console.log(selectedDemoData);
 
                   selectedNeighbor.innerText = selectedDemoData.Buurten;
 
                   if (selectedDemoData.total_population !="") {
-                    totalpop.innerText = "- " + selectedDemoData.total_population;
+                    totalpop.innerText = selectedDemoData.total_population;
                   } else {
-                    totalpop.innerText = "- " + "No data"
+                    totalpop.innerText = "No data"
                   };
 
                   if (selectedDemoData.men_2020 !="") {
-                    men.innerText = "- " + selectedDemoData.men_2020 + " %";
+                    men.innerText = selectedDemoData.men_2020 + "%";
+                    men_figure.style.width = selectedDemoData.men_2020 + "%";
                   } else {
-                    men.innerText = "- " + "No data"
+                    men.innerText = "No data"
                   };
 
                   if (selectedDemoData.women_2020 !="") {
-                    women.innerText = "- " + selectedDemoData.women_2020 + " %";
+                    women.innerText = selectedDemoData.women_2020 + "%";
+                    women_figure.style.width = selectedDemoData.women_2020 + "%";
                   } else {
-                    women.innerText = "- " + "No data"
+                    women.innerText = "No data"
                   };
 
                   if (selectedDemoData['0-14_2020'] !="") {
-                    age0_14.innerText = "- " + selectedDemoData['0-14_2020'] + " %";
+                    age0_14.innerText = selectedDemoData['0-14_2020'] + "%";
+                    age0_14_figure.style.width = selectedDemoData['0-14_2020'] + "%";
                   } else {
-                    age0_14.innerText = "- " + "No data"
+                    age0_14.innerText = "No data"
                   };
 
                   if (selectedDemoData['15-64_2020'] !="") {
-                    age15_64.innerText = "- " + selectedDemoData['15-64_2020'] + " %";
+                    age15_64.innerText = selectedDemoData['15-64_2020'] + "%";
+                    age15_64_figure.style.width = selectedDemoData['15-64_2020'] + "%";
                   } else {
-                    age15_64.innerText = "- " + "No data"
+                    age15_64.innerText = "No data"
                   };
 
                   if (selectedDemoData['65andAbove_2020'] !="") {
-                    age65.innerText = "- " + selectedDemoData['65andAbove_2020'] + " %";
+                    age65.innerText = selectedDemoData['65andAbove_2020'] + "%";
+                    age65_figure.style.width = selectedDemoData['65andAbove_2020'] + "%";
                   } else {
-                    age65.innerText = "- " + "No data"
+                    age65.innerText = "No data"
                   };
 
                   if (selectedDemoData.Dutch_2020 !="") {
-                    dutch.innerText = "- " + selectedDemoData.Dutch_2020 + " %";
+                    dutch.innerText = selectedDemoData.Dutch_2020 + "%";
+                    dutch_figure.style.width = selectedDemoData.Dutch_2020 + "%";
                   } else {
-                    dutch.innerText = "- " + "No data"
+                    dutch.innerText = "No data"
                   };
 
                   if (selectedDemoData.immigrants_2020 !="") {
-                    immigrants.innerText = "- " + selectedDemoData.immigrants_2020 + " %";
+                    immigrants.innerText = selectedDemoData.immigrants_2020 + "%";
+                    immigrants_figure.style.width = selectedDemoData.immigrants_2020 + "%";
                   } else {
-                    immigrants.innerText = "- " + "No data"
+                    immigrants.innerText = "No data"
                   };
 
                   if (selectedDemoData.single_2019 !="") {
-                    single.innerText = "- " + selectedDemoData.single_2019 + " %";
+                    single.innerText = selectedDemoData.single_2019 + "%";
+                    single_figure.style.width = selectedDemoData.single_2019 + "%";
                   } else {
-                    single.innerText = "- " + "No data"
+                    single.innerText = "No data"
                   };
 
                   if (selectedDemoData.w_kids_2019 !="") {
-                    wKids.innerText = "- " + selectedDemoData.w_kids_2019 + " %";
+                    wKids.innerText = selectedDemoData.w_kids_2019 + "%";
+                    wKids_figure.style.width = selectedDemoData.w_kids_2019 + "%";
                   } else {
-                    wKids.innerText = "- " + "No data"
+                    wKids.innerText = "No data"
                   };
 
                   if (selectedDemoData.avg_income_person_2019 !="") {
-                    income.innerText = "- " + selectedDemoData.avg_income_person_2019 + " EUR";
+                    income.innerText = "EUR " + selectedDemoData.avg_income_person_2019;
                   } else {
-                    income.innerText = "- " + "No data"
+                    income.innerText = "No data"
                   };
 
                   if (selectedDemoData.foot_2019 !="") {
-                    foot.innerText = "- " + selectedDemoData.foot_2019 + " %";
+                    foot.innerText = selectedDemoData.foot_2019 + "%";
+                    foot_figure.style.width = selectedDemoData.foot_2019 + "%";
                   } else {
-                    foot.innerText = "- " + "No data"
+                    foot.innerText = "No data"
                   };
 
                   if (selectedDemoData.fiets_2019 !="") {
-                    bike.innerText = "- " + selectedDemoData.fiets_2019 + " %";
+                    bike.innerText = selectedDemoData.fiets_2019 + "%";
+                    bike_figure.style.width = selectedDemoData.fiets_2019 + "%";
                   } else {
-                    bike.innerText = "- " + "No data"
+                    bike.innerText = "No data"
                   };
 
                   if (selectedDemoData.auto_2019 !="") {
-                    auto.innerText = "- " + selectedDemoData.auto_2019 + " %";
+                    auto.innerText = selectedDemoData.auto_2019 + "%";
+                    auto_figure.style.width = selectedDemoData.auto_2019 + "%";
                   } else {
-                    auto.innerText = "- " + "No data"
+                    auto.innerText = "No data"
                   };
 
                   if (selectedDemoData.transit_2019 !="") {
-                    transit.innerText = "- " + selectedDemoData.transit_2019 + " %";
+                    transit.innerText = selectedDemoData.transit_2019 + "%";
+                    transit_figure.style.width = selectedDemoData.transit_2019 + "%";
                   } else {
-                    transit.innerText = "- " + "No data"
+                    transit.innerText = "No data"
                   };
-
                   break;
                 };
               }
             });
-
             sidebarjs.open();
           }
 
@@ -917,8 +903,7 @@ const vizmaps = ()=> {
             };
 
             bindDataBS = function (attr, whichbase) {
-              // console.log(attr);
-              // console.log(whichbase);
+
               Promise.resolve()
               .then(pushArray.bind(this, attr, whichbase))
               //depression, disease, h_drinker, healthy, illness, lonliness, m_drinker, m_exercise, neighbor, overweight, physical_p, smoker, : 61
@@ -928,14 +913,7 @@ const vizmaps = ()=> {
               .catch(onRejectted);
             }
 
-          // if (mapInitialize == false) {
-          //   bindDataBS(basedataDefault, 'stadsdeel');
-          // }
-
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -943,11 +921,8 @@ const vizmaps = ()=> {
               .style('stroke', 'rgb(0,0,0)')
               .duration(200);
 
-              // tooltipContainerBM.style.left = xLocation + "px";
-              // tooltipContainerBM.style.top = yLocation + "px";
               tooltipPlace.innerText = i.properties.districts;
               tooltipContainerBM.setAttribute('aria-hidden','false');
-
 
               if (i.properties[selectedAttribute] != null) {
                 tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
@@ -989,14 +964,10 @@ const vizmaps = ()=> {
 			let svg_bo = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'basemap-outline');
 		  let g_bo = svg_bo.append('g').attr('class', 'leaflet-zoom-hide');
 
-      baseoutline_svg = document.getElementById('basemap-outline');
-
-      // if (mapInitialize == true) {
-      //   basestadsdeel_svg.setAttribute('aria-hidden', 'true');
-      // }
+      const baseoutline_svg = document.getElementById('basemap-outline');
 
       d3.json(outline_path).then(function(geojson) {
-        geojson_bo = geojson;
+        let geojson_bo = geojson;
         let feature_bo = g_bo.selectAll('path')
                               .data(geojson_bo.features)
                               .enter()
@@ -1018,8 +989,6 @@ const vizmaps = ()=> {
 
             g_bo.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
 
-
-
                 feature_bo.attr('d', path)
                   .style('stroke', '#999999') //#bbbbbb
                   .style('stroke-width', '3px')
@@ -1036,6 +1005,204 @@ const vizmaps = ()=> {
       })
     }, //bo
 
+    // green area (polygon)
+    green_area: function green_area() {
+
+      let projectPoint = function projectPoint(x, y) {
+        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+          this.stream.point(point.x, point.y);
+      };
+
+      // Transform positions
+      let transform = d3.geoTransform({point: projectPoint}),
+        path = d3.geoPath().projection(transform);
+
+      let svg_ga = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'green-area');
+      let g_ga = svg_ga.append('g').attr('class', 'leaflet-zoom-hide');
+
+
+      const greenarea_svg = document.getElementById('green-area');
+
+      if (mapInitialize == true) {
+        greenarea_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(greenarea_path).then(function(geojson) {
+        let geojson_ga = geojson;
+        //console.log(geojson_ga);
+        let feature_ga = g_ga.selectAll('path')
+                              .data(geojson_ga.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_ga),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_ga.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_ga.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            feature_ga.attr('d', path)
+                .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+                .style('cursor', 'pointer')
+                .style('fill', 'rgb(109,192,103)')
+                .style('opacity', '0')
+                .transition()
+                .duration(500)
+                .style('opacity', '0.7');
+
+                feature_ga.attr('d', path).on("mouseover", handleMouseOver)
+                  .on("mouseout", handleMouseOut);
+
+              function handleMouseOver(d, i) {
+
+                d3.select(this)
+                  .transition()
+                  .style('opacity', 1)
+                  .style('stroke-width', "1px")
+                  .style('stroke', "#000")
+                  .duration(200);
+
+                  function capitalize(initialLetter)
+                  {
+                    return initialLetter[0].toUpperCase() + initialLetter.slice(1);
+                  }
+
+                  tooltipType.innerText = capitalize(i.properties.type);
+                  tooltipContainerOL.setAttribute('aria-hidden','false');
+
+                  if (i.properties.name !== null) {
+                    tooltipName.innerText = capitalize(i.properties.name);
+                  } else {
+                    tooltipName.innerText = 'Not available';
+                  }
+              } //handleMouseOver
+
+              function handleMouseOut (d, i) {
+                tooltipContainerOL.setAttribute('aria-hidden','true');
+
+                d3.select(this)
+                  .transition()
+                  .style('opacity', 0.7)
+                  .style('stroke-width', "0px")
+                  .style('stroke', "none")
+                  .duration(200);
+              }
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //ga
+
+    // Parks and playgrounds (polygon)
+    parks_playgrounds: function parks_playgrounds() {
+
+      let projectPoint = function projectPoint(x, y) {
+        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+          this.stream.point(point.x, point.y);
+      };
+
+      // Transform positions
+      let transform = d3.geoTransform({point: projectPoint}),
+        path = d3.geoPath().projection(transform);
+
+      let svg_pp = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'parks-playgrounds');
+      let g_pp = svg_pp.append('g').attr('class', 'leaflet-zoom-hide');
+
+
+      const parksplaygrounds_svg = document.getElementById('parks-playgrounds');
+
+      if (mapInitialize == true) {
+        parksplaygrounds_svg.setAttribute('aria-hidden', 'true');
+      }
+
+      d3.json(parksplaygrounds_path).then(function(geojson) {
+        let geojson_pp = geojson;
+        let feature_pp = g_pp.selectAll('path')
+                              .data(geojson_pp.features)
+                              .enter()
+                              .append('path');
+
+        map.on('moveend', reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+          let bounds = path.bounds(geojson_pp),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+            svg_pp.attr('width', bottomRight[0] - topLeft[0])
+                  .attr('height', bottomRight[1] - topLeft[1])
+                  .style('left', topLeft[0] + 'px')
+                  .style('top', topLeft[1] + 'px')
+                  .style('overflow', 'visible');
+
+            g_pp.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
+
+            feature_pp.attr('d', path)
+                .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+                .style('cursor', 'pointer')
+                .style('fill', 'green')
+                .style('opacity', '0')
+                .transition()
+                .duration(500)
+                .style('opacity', '0.7');
+
+                feature_pp.attr('d', path).on("mouseover", handleMouseOver)
+                  .on("mouseout", handleMouseOut);
+
+              function handleMouseOver(d, i) {
+
+                d3.select(this)
+                  .transition()
+                  .style('opacity', 1)
+                  .style('stroke-width', "1px")
+                  .style('stroke', "#000")
+                  .duration(200);
+
+                  tooltipType.innerText = i.properties.type;
+                  tooltipContainerOL.setAttribute('aria-hidden','false');
+
+                  if (i.properties.name !== null) {
+                    tooltipName.innerText = i.properties.name;
+                  } else {
+                    tooltipName.innerText = 'Not available';
+                  }
+              } //handleMouseOver
+
+              function handleMouseOut (d, i) {
+                tooltipContainerOL.setAttribute('aria-hidden','true');
+
+                d3.select(this)
+                  .transition()
+                  .style('opacity', 0.7)
+                  .style('stroke-width', "0px")
+                  .style('stroke', "none")
+                  .duration(200);
+              }
+
+          //remove loader
+          loader = document.getElementById('loader-bg');
+          loader.setAttribute('aria-hidden','true');
+
+        }// reset
+      })
+    }, //pp
+
     // Overlay Bennekel
     bennekel: function bennekel() {
 
@@ -1051,14 +1218,14 @@ const vizmaps = ()=> {
 			let svg_bk = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'bennekel');
 		  let g_bk = svg_bk.append('g').attr('class', 'leaflet-zoom-hide');
 
-      bennekel_svg = document.getElementById('bennekel');
+      const bennekel_svg = document.getElementById('bennekel');
 
       if (mapInitialize == true) {
         bennekel_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(bennekel_path).then(function(geojson) {
-        geojson_bk = geojson;
+        let geojson_bk = geojson;
         let feature_bk = g_bk.selectAll('path')
                               .data(geojson_bk.features)
                               .enter()
@@ -1092,9 +1259,6 @@ const vizmaps = ()=> {
                 .on("mouseout", handleMouseOut).on("click", handleMouseClick);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -1102,17 +1266,8 @@ const vizmaps = ()=> {
               .style('stroke', 'rgb(0,0,0)')
               .duration(200);
 
-              //tooltipContainerBK.style.left = xLocation + "px";
-              // tooltipContainerBM.style.top = yLocation + "px";
-              // tooltipPlace.innerText = i.properties.districts;
               tooltipContainerBK.setAttribute('aria-hidden','false');
 
-
-              // if (i.properties[selectedAttribute] != null) {
-              //   tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
-              // } else {
-              //   tooltipValue.innerText = 'No Data';
-              // }
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
@@ -1158,24 +1313,14 @@ const vizmaps = ()=> {
       let svg_tr = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'traffic');
       let g_tr = svg_tr.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      // let defs = svg_tr.append("defs");
-
-      // let filter = defs.append("filter")
-      //     .attr("id", "dot-blur");
-
-      // filter.append("feGaussianBlur")
-      //     .attr("in", "SourceGraphic")
-      //     .attr("stdDeviation", 1);
-
-      traffic_svg = document.getElementById('traffic');
+      const traffic_svg = document.getElementById('traffic');
 
       if (mapInitialize == true) {
         traffic_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(traffic_path).then(function(geojson) {
-        geojson_tr = geojson;
+        let geojson_tr = geojson;
         let feature_tr = g_tr.selectAll('path')
                               .data(geojson_tr.features)
                               .enter()
@@ -1234,44 +1379,66 @@ const vizmaps = ()=> {
 	                    }
                    })
                    .style('fill', 'none')
-                   .style('pointer-events', 'none')
+                   .style('pointer-events', 'auto')
                    .style('cursor', 'pointer')
-        		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
-
-                   feature_tr.attr('d', path).on("mouseover", handleMouseOver)
-                    .on("mouseout", handleMouseOut);
-
+        		       .attr('class', 'pointer-release') // Release leaflet's css pointer-event:none
+                   .on("mouseover",handleMouseOver)
+                   .on("mouseout",handleMouseOut);
 
                   function handleMouseOver(d, i) {
-                  console.log('mouseover tr');
-                  // console.log(d);
-                  // console.log(i);
+                      d3.select(this)
+                      .transition()
+                      //.style('opacity', 1)
+                      .style('stroke-width', ()=>{
+                        if (zoomLev <= 11) {
+                           return 2;
+                       } else if (zoomLev == 12) {
+                           return 3;
+                       } else if (zoomLev == 13) {
+                           return 4;
+                       } else if (zoomLev == 14) {
+                           return 6;
+                       } else if (zoomLev == 15) {
+                           return 8;
+                       } else if (zoomLev == 16) {
+                       return 10;
+                       } else {
+                         return 4;
+                       }
+                    })
+                      .duration(200);
+                      if (i.properties.max_speed != 0) {
+                        tooltipSpeedLimit.innerText = i.properties.max_speed + " km/h";
+                      } else {
+                        tooltipSpeedLimit.innerText = "No speed limit (pedestrian/footway)"
+                      }
 
-                  d3.select(this)
-                    .transition()
-                    .style('opacity', 1)
-                    .style('stroke', 'rgb(0,0,0)')
-                    .duration(200);
+                      tooltipContainerTR.setAttribute('aria-hidden','false');
 
-
-                    //tooltip.innerText = i.properties.districts;
-                    tooltipContainerTR.setAttribute('aria-hidden','false');
-
-
-                    // if (i.properties[selectedAttribute] != null) {
-                    //   tooltipValue.innerText = i.properties[selectedAttribute] + ' %';
-                    // } else {
-                    //   tooltipValue.innerText = 'No Data';
-                    // }
-                } //handleMouseOver
+                  } //handleMouseOver
 
                 function handleMouseOut (d, i) {
                   tooltipContainerTR.setAttribute('aria-hidden','true');
 
                   d3.select(this)
                     .transition()
-                    .style('opacity', 0.7)
-                    .style('stroke', 'rgb(187,187,187)')
+                    .style('stroke-width', ()=>{
+                      if (zoomLev <= 11) {
+                          return 1;
+                      } else if (zoomLev == 12) {
+                          return 1.5;
+                      } else if (zoomLev == 13) {
+                          return 2;
+                      } else if (zoomLev == 14) {
+                          return 3;
+                      } else if (zoomLev == 15) {
+                          return 4;
+                      } else if (zoomLev == 16) {
+                      return 5;
+                      } else {
+                        return 2;
+                      }
+                    })
                     .duration(200);
                 }
 
@@ -1298,24 +1465,14 @@ const vizmaps = ()=> {
       let svg_br = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'bike-routes');
       let g_br = svg_br.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      let defs = svg_br.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      bikeroutes_svg = document.getElementById('bike-routes');
+      const bikeroutes_svg = document.getElementById('bike-routes');
 
       if (mapInitialize == true) {
         bikeroutes_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(bikeroutes_path).then(function(geojson) {
-        geojson_br = geojson;
+        let geojson_br = geojson;
         let feature_br = g_br.selectAll('path')
                               .data(geojson_br.features)
                               .enter()
@@ -1363,7 +1520,6 @@ const vizmaps = ()=> {
                    .style('fill', 'none')
         		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
 
-
           //remove loader
           loader = document.getElementById('loader-bg');
           loader.setAttribute('aria-hidden','true');
@@ -1376,7 +1532,7 @@ const vizmaps = ()=> {
      running_routes: function running_routes() {
 
       let projectPoint = function projectPoint(x, y) {
-        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
+        let point = map.latLngToLayerPoint(new L.LatLng(x,y)); // *Check lat lon, lon lat
           this.stream.point(point.x, point.y);
       };
 
@@ -1387,24 +1543,14 @@ const vizmaps = ()=> {
       let svg_rr = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'running-routes');
       let g_rr = svg_rr.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      // let defs = svg_tr.append("defs");
-
-      // let filter = defs.append("filter")
-      //     .attr("id", "dot-blur");
-
-      // filter.append("feGaussianBlur")
-      //     .attr("in", "SourceGraphic")
-      //     .attr("stdDeviation", 1);
-
-      runningroutes_svg = document.getElementById('running-routes');
+      const runningroutes_svg = document.getElementById('running-routes');
 
       if (mapInitialize == true) {
         runningroutes_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(runningroutes_path).then(function(geojson) {
-        geojson_rr = geojson;
+        let geojson_rr = geojson;
         let feature_rr = g_rr.selectAll('path')
                               .data(geojson_rr.features)
                               .enter()
@@ -1434,24 +1580,23 @@ const vizmaps = ()=> {
                    .style('opacity', 0.3)
                    .style('stroke-width', ()=>{
                    		if (zoomLev <= 11) {
-	                        return 2;
+	                        return 1.5;
 	                    } else if (zoomLev == 12) {
-	                        return 3;
+	                        return 2;
 	                    } else if (zoomLev == 13) {
-	                        return 4;
+	                        return 3;
 	                    } else if (zoomLev == 14) {
-	                        return 5;
+	                        return 4;
 	                    } else if (zoomLev == 15) {
-	                        return 6;
+	                        return 5;
 	                    } else if (zoomLev == 16) {
-	                		return 7;
+	                		return 6;
 	                    } else {
-	                    	return 3;
+	                    	return 2;
 	                    }
                    })
                    .style('fill', 'none')
         		       .attr('class', 'pointer-release'); // Release leaflet's css pointer-event:none
-
 
           //remove loader
           loader = document.getElementById('loader-bg');
@@ -1486,14 +1631,14 @@ const vizmaps = ()=> {
           .attr("in", "SourceGraphic")
           .attr("stdDeviation", 1);
 
-      sportsfacilities_svg = document.getElementById('sports-facilities');
+      const sportsfacilities_svg = document.getElementById('sports-facilities');
 
       if (mapInitialize == true) {
         sportsfacilities_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(sportsfacilities_path).then(function(geojson) {
-        geojson_sf = geojson;
+        let geojson_sf = geojson;
         let feature_sf = g_sf.selectAll('path')
                               .data(geojson_sf.features)
                               .enter()
@@ -1522,14 +1667,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(254, 90, 60)')
-
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_sf.attr("d", path.pointRadius(4));
@@ -1557,16 +1700,11 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
               .style('opacity', 1)
-              //.style('stroke', '#666666') //#bbbbbb
               .style('stroke-width', '1px')
-              //.style("filter","url(#dot-blur)")
               .duration(200)
 
               tooltipType.innerText = i.properties.type;
@@ -1622,14 +1760,14 @@ const vizmaps = ()=> {
           .attr("in", "SourceGraphic")
           .attr("stdDeviation", 1);
 
-      medicalfacilities_svg = document.getElementById('medical-facilities');
+      const medicalfacilities_svg = document.getElementById('medical-facilities');
 
       if (mapInitialize == true) {
         medicalfacilities_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(medicalfacilities_path).then(function(geojson) {
-        geojson_mf = geojson;
+        let geojson_mf = geojson;
         let feature_mf = g_mf.selectAll('path')
                               .data(geojson_mf.features)
                               .enter()
@@ -1658,14 +1796,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(31,120,180)')
-              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_mf.attr("d", path.pointRadius(4));
@@ -1693,9 +1829,6 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -1746,24 +1879,14 @@ const vizmaps = ()=> {
 			let svg_cc = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'community-centers');
 		  let g_cc = svg_cc.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      let defs = svg_cc.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      communitycenters_svg = document.getElementById('community-centers');
+      const communitycenters_svg = document.getElementById('community-centers');
 
       if (mapInitialize == true) {
         communitycenters_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(communitycenters_path).then(function(geojson) {
-        geojson_cc = geojson;
+        let geojson_cc = geojson;
         let feature_cc = g_cc.selectAll('path')
                               .data(geojson_cc.features)
                               .enter()
@@ -1792,14 +1915,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(244, 240, 52)')
-              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_cc.attr("d", path.pointRadius(4));
@@ -1827,9 +1948,6 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -1880,24 +1998,14 @@ const vizmaps = ()=> {
 			let svg_ss = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'sports-shops');
 		  let g_ss = svg_ss.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      let defs = svg_ss.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      sportsshops_svg = document.getElementById('sports-shops');
+      const sportsshops_svg = document.getElementById('sports-shops');
 
       if (mapInitialize == true) {
         sportsshops_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(sportsshops_path).then(function(geojson) {
-        geojson_ss = geojson;
+        let geojson_ss = geojson;
         let feature_ss = g_ss.selectAll('path')
                               .data(geojson_ss.features)
                               .enter()
@@ -1926,14 +2034,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(134, 87, 147)')
-              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_ss.attr("d", path.pointRadius(4));
@@ -1961,9 +2067,6 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -2014,24 +2117,14 @@ const vizmaps = ()=> {
 			let svg_gs = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'grocery-stores');
 		  let g_gs = svg_gs.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      let defs = svg_gs.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      let grocerystores_svg = document.getElementById('grocery-stores');
+      const grocerystores_svg = document.getElementById('grocery-stores');
 
       if (mapInitialize == true) {
         grocerystores_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(grocerystores_path).then(function(geojson) {
-        geojson_gs = geojson;
+        let geojson_gs = geojson;
         let feature_gs = g_gs.selectAll('path')
                               .data(geojson_gs.features)
                               .enter()
@@ -2060,14 +2153,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(121, 164, 167)')
-              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_gs.attr("d", path.pointRadius(4));
@@ -2095,9 +2186,6 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -2148,17 +2236,7 @@ const vizmaps = ()=> {
 			let svg_ff = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'fast-foods');
 		  let g_ff = svg_ff.append('g').attr('class', 'leaflet-zoom-hide');
 
-      //filters go in defs element
-      let defs = svg_ff.append("defs");
-
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
-
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", 1);
-
-      let fastfoods_svg = document.getElementById('fast-foods');
+      const fastfoods_svg = document.getElementById('fast-foods');
 
       if (mapInitialize == true) {
         fastfoods_svg.setAttribute('aria-hidden', 'true');
@@ -2194,14 +2272,12 @@ const vizmaps = ()=> {
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', 'rgb(164, 101, 30)')
-              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_ff.attr("d", path.pointRadius(4));
@@ -2229,9 +2305,6 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -2239,20 +2312,19 @@ const vizmaps = ()=> {
               .style('stroke-width', '1px')
               .duration(200);
 
+            tooltipType.innerText = i.properties.type;
+            tooltipContainerOL.setAttribute('aria-hidden','false');
 
-              // tooltipConcernsTopic.innerText = i.properties.type;
-              // tooltipConcernsTime =
-              tooltipContainerPC.setAttribute('aria-hidden','false');
+            if (i.properties.name !== null) {
+              tooltipName.innerText = i.properties.name;
+            } else {
+              tooltipName.innerText = 'Not available';
+            }
 
-              // if (i.properties.name !== null) {
-              //   tooltipName.innerText = i.properties.name;
-              // } else {
-              //   tooltipName.innerText = 'Not available';
-              // }
           } //handleMouseOver
 
           function handleMouseOut (d, i) {
-            tooltipContainerPC.setAttribute('aria-hidden','true');
+            tooltipContainerOL.setAttribute('aria-hidden','true');
 
             d3.select(this)
               .transition()
@@ -2284,16 +2356,14 @@ const vizmaps = ()=> {
 			let svg_pc = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'public-concerns');
 		  let g_pc = svg_pc.append('g').attr('class', 'leaflet-zoom-hide');
 
-
-
-      let publicconcerns_svg = document.getElementById('public-concerns');
+      const publicconcerns_svg = document.getElementById('public-concerns');
 
       if (mapInitialize == true) {
         publicconcerns_svg.setAttribute('aria-hidden', 'true');
       }
 
       d3.json(publicconcerns_path).then(function(geojson) {
-        geojson_pc = geojson;
+        let geojson_pc = geojson;
         let feature_pc = g_pc.selectAll('path')
                               .data(geojson_pc.features)
                               .enter()
@@ -2343,7 +2413,6 @@ const vizmaps = ()=> {
               .style('opacity', '0.7');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_pc.attr("d", path.pointRadius(4));
@@ -2372,8 +2441,6 @@ const vizmaps = ()=> {
 
           function handleMouseOver(d, i) {
             console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
@@ -2384,8 +2451,6 @@ const vizmaps = ()=> {
               tooltipConcernsTopic.innerText = i.properties.onderwerp;
               tooltipConcernsTime.innerText = i.properties.aangemaakt;
               tooltipContainerPC.setAttribute('aria-hidden','false');
-
-
 
           } //handleMouseOver
 
@@ -2462,13 +2527,6 @@ const vizmaps = ()=> {
 
             g_aq.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
 
-
-            // const pm25max = d3.max(geojson_aq.features, function(d) { return d['properties']['PM2.5'] });
-		        // const pm25min = d3.min(geojson_aq.features, function(d) { return d['properties']['PM2.5'] });
-
-            // console.log(pm25max);
-            // console.log(pm25min);
-
             feature_aq.attr('d', path)
               .style('stroke', '#999') //#bbbbbb
               .style('stroke-width', '0px')
@@ -2490,7 +2548,6 @@ const vizmaps = ()=> {
               .style('opacity', '0.8');
 
             let zoomLev = map.getZoom();
-            console.log(zoomLev);
 
             if (zoomLev <= 11) {
                 feature_aq.attr("d", path.pointRadius(8));
@@ -2518,14 +2575,12 @@ const vizmaps = ()=> {
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
-            // console.log('mouseover');
-            // console.log(d);
-            // console.log(i);
 
             d3.select(this)
               .transition()
               .style('opacity', 1)
               .style('stroke-width', '1px')
+              .style('stroke', '#000') //#bbbbbb
               .duration(200);
 
               console.log(i.properties['PM1']);
@@ -2558,6 +2613,7 @@ const vizmaps = ()=> {
               .transition()
               .style('opacity', 0.8)
               .style('stroke-width', '0px')
+              .style('stroke', '#999') //#bbbbbb
               .duration(200);
           }
 
@@ -2567,236 +2623,7 @@ const vizmaps = ()=> {
 
         }// reset
       })
-    }, //aq
-
-
-
-    // Parks and playgrounds (polygon)
-    parks_playgrounds: function parks_playgrounds() {
-
-      let projectPoint = function projectPoint(x, y) {
-        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
-          this.stream.point(point.x, point.y);
-      };
-
-      // Transform positions
-      let transform = d3.geoTransform({point: projectPoint}),
-        path = d3.geoPath().projection(transform);
-
-      let svg_pp = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'parks-playgrounds');
-      let g_pp = svg_pp.append('g').attr('class', 'leaflet-zoom-hide');
-
-
-      parksplaygrounds_svg = document.getElementById('parks-playgrounds');
-
-      if (mapInitialize == true) {
-        parksplaygrounds_svg.setAttribute('aria-hidden', 'true');
-      }
-
-      d3.json(parksplaygrounds_path).then(function(geojson) {
-        geojson_pp = geojson;
-        //console.log(geojson_pp);
-        let feature_pp = g_pp.selectAll('path')
-                              .data(geojson_pp.features)
-                              .enter()
-                              .append('path');
-
-        map.on('moveend', reset);
-        reset();
-
-        // Reposition the SVG to cover the features.
-        function reset() {
-          let bounds = path.bounds(geojson_pp),
-            topLeft = bounds[0],
-            bottomRight = bounds[1];
-
-            svg_pp.attr('width', bottomRight[0] - topLeft[0])
-                  .attr('height', bottomRight[1] - topLeft[1])
-                  .style('left', topLeft[0] + 'px')
-                  .style('top', topLeft[1] + 'px')
-                  .style('overflow', 'visible');
-
-            g_pp.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
-
-            feature_pp.attr('d', path)
-                //.style('stroke', 'rgb(187,187,187)') //#bbbbbb
-                //.style('stroke-width', '1px')
-                .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
-                .style('cursor', 'pointer')
-                .style('fill', 'green')//(d)=> {
-                  // if (d.properties[selectedAttribute] >= interval6) {
-                  //     return 'rgb(204,76,2)';
-                  // } else if (d.properties[selectedAttribute] >= interval4 & d.properties[selectedAttribute] < interval6) {
-                  //     return 'rgb(254,153,41)';
-                  // } else if (d.properties[selectedAttribute] >= interval2 & d.properties[selectedAttribute] < interval4) {
-                  //     return 'rgb(254,217,142)';
-                  // } else if (d.properties[selectedAttribute] >= interval0 & d.properties[selectedAttribute] < interval2) {
-                  //     return 'rgb(255,255,212)';
-                  // } else {
-                  //   return 'rgb(212,212,212)'; //#d4d4d4;
-                  // }
-                //})
-                .style('opacity', '0')
-                .transition()
-                .duration(500)
-                .style('opacity', '0.7');
-
-                feature_pp.attr('d', path).on("mouseover", handleMouseOver)
-                  .on("mouseout", handleMouseOut);
-
-
-              function handleMouseOver(d, i) {
-                // console.log('mouseover');
-                // console.log(d);
-                // console.log(i);
-
-                d3.select(this)
-                  .transition()
-                  .style('opacity', 0.4)
-                  .duration(200);
-
-                  tooltipType.innerText = i.properties.type;
-                  tooltipContainerOL.setAttribute('aria-hidden','false');
-
-                  if (i.properties.name !== null) {
-                    tooltipName.innerText = i.properties.name;
-                  } else {
-                    tooltipName.innerText = 'Not available';
-                  }
-              } //handleMouseOver
-
-              function handleMouseOut (d, i) {
-                tooltipContainerOL.setAttribute('aria-hidden','true');
-
-                d3.select(this)
-                  .transition()
-                  .style('opacity', 0.7)
-                  .duration(200);
-              }
-
-          //remove loader
-          loader = document.getElementById('loader-bg');
-          loader.setAttribute('aria-hidden','true');
-
-        }// reset
-      })
-    }, //pp
-
-    // green area (polygon)
-    green_area: function green_area() {
-
-      let projectPoint = function projectPoint(x, y) {
-        let point = map.latLngToLayerPoint(new L.LatLng(y,x)); // *Check lat lon, lon lat
-          this.stream.point(point.x, point.y);
-      };
-
-      // Transform positions
-      let transform = d3.geoTransform({point: projectPoint}),
-        path = d3.geoPath().projection(transform);
-
-      let svg_ga = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'green-area');
-      let g_ga = svg_ga.append('g').attr('class', 'leaflet-zoom-hide');
-
-
-      greenarea_svg = document.getElementById('green-area');
-
-      if (mapInitialize == true) {
-        greenarea_svg.setAttribute('aria-hidden', 'true');
-      }
-
-      d3.json(greenarea_path).then(function(geojson) {
-        geojson_ga = geojson;
-        //console.log(geojson_ga);
-        let feature_ga = g_ga.selectAll('path')
-                              .data(geojson_ga.features)
-                              .enter()
-                              .append('path');
-
-        map.on('moveend', reset);
-        reset();
-
-        // Reposition the SVG to cover the features.
-        function reset() {
-          let bounds = path.bounds(geojson_ga),
-            topLeft = bounds[0],
-            bottomRight = bounds[1];
-
-            svg_ga.attr('width', bottomRight[0] - topLeft[0])
-                  .attr('height', bottomRight[1] - topLeft[1])
-                  .style('left', topLeft[0] + 'px')
-                  .style('top', topLeft[1] + 'px')
-                  .style('overflow', 'visible');
-
-            g_ga.attr('transform', 'translate(' + -topLeft[0] + ',' + -topLeft[1] + ')');
-
-            feature_ga.attr('d', path)
-                // .style('stroke', 'rgb(187,187,187)') //#bbbbbb
-                // .style('stroke-width', '1px')
-                .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
-                .style('cursor', 'pointer')
-                .style('fill', 'rgb(109,192,103)')//(d)=> {
-                  // if (d.properties[selectedAttribute] >= interval6) {
-                  //     return 'rgb(204,76,2)';
-                  // } else if (d.properties[selectedAttribute] >= interval4 & d.properties[selectedAttribute] < interval6) {
-                  //     return 'rgb(254,153,41)';
-                  // } else if (d.properties[selectedAttribute] >= interval2 & d.properties[selectedAttribute] < interval4) {
-                  //     return 'rgb(254,217,142)';
-                  // } else if (d.properties[selectedAttribute] >= interval0 & d.properties[selectedAttribute] < interval2) {
-                  //     return 'rgb(255,255,212)';
-                  // } else {
-                  //   return 'rgb(212,212,212)'; //#d4d4d4;
-                  // }
-                //})
-                .style('opacity', '0')
-                .transition()
-                .duration(500)
-                .style('opacity', '0.7');
-
-                feature_ga.attr('d', path).on("mouseover", handleMouseOver)
-                  .on("mouseout", handleMouseOut);
-
-
-              function handleMouseOver(d, i) {
-                // console.log('mouseover');
-                // console.log(d);
-                // console.log(i);
-
-                d3.select(this)
-                  .transition()
-                  .style('opacity', 0.4)
-                  .duration(200);
-
-                  function capitalize(initialLetter)
-                  {
-                      return initialLetter[0].toUpperCase() + initialLetter.slice(1);
-                  }
-
-                  tooltipType.innerText = capitalize(i.properties.type);
-                  tooltipContainerOL.setAttribute('aria-hidden','false');
-
-                  if (i.properties.name !== null) {
-                    tooltipName.innerText = capitalize(i.properties.name);
-                  } else {
-                    tooltipName.innerText = 'Not available';
-                  }
-              } //handleMouseOver
-
-              function handleMouseOut (d, i) {
-                tooltipContainerOL.setAttribute('aria-hidden','true');
-
-                d3.select(this)
-                  .transition()
-                  .style('opacity', 0.7)
-                  .duration(200);
-              }
-
-          //remove loader
-          loader = document.getElementById('loader-bg');
-          loader.setAttribute('aria-hidden','true');
-
-        }// reset
-      })
-    }, //pp
+    } //aq
 
   } //mapLayers
 
@@ -2826,13 +2653,10 @@ const vizmaps = ()=> {
 
   changeBasemap = function changeBasemap(value){
     baseStatus = value;
-    console.log(value);
     if (value == 'stadsdeel'){
       basebuurt_svg.setAttribute('aria-hidden', 'true');
-      console.log(basebuurt_svg);
       basestadsdeel_svg.setAttribute('aria-hidden', 'false');
       bindDataBS(selectedAttribute, 'stadsdeel');
-      console.log(basestadsdeel_svg);
     } else if (value == 'buurt') {
       basebuurt_svg.setAttribute('aria-hidden', 'false');
       basestadsdeel_svg.setAttribute('aria-hidden', 'true');
@@ -2841,9 +2665,6 @@ const vizmaps = ()=> {
   }
 
   changeAttr = function (newAttr) {
-    //console.log('attr changed');
-    //console.log(newAttr);
-    //console.log(baseStatus);
     selectedAttribute = newAttr;
     if (baseStatus == 'buurt') {
       bindDataBB(newAttr, baseStatus);
@@ -2856,40 +2677,26 @@ const vizmaps = ()=> {
     basemapInfo.classList.add('active');
   };
 
-
-
-  // addOverlay test
+  // addOverlay
   addOverlay = function (status, value) {
-    // console.log(status);
-    // console.log(value);
     if (status == true && value != undefined) {
-      //console.log('add overlay');
       document.getElementById(value).setAttribute('aria-hidden', 'false');
     } else if (status == false && value != undefined) {
-      //console.log('remove overlay');
       document.getElementById(value).setAttribute('aria-hidden', 'true');
     }
   }
-
 };
 
 function initializeMap() {
-  //console.log('map is initialized');
   mapInitialize = true;
-  //console.log(mapInitialize);
   baseStatus = 'buurt';
   vizmaps();
 }
-
-//console.log('remote log test js here');
-// console.re.log('remote log test from js');
-
 
 //Bennekel data viz
 d3.json(bennekeldata_path).then(function(data) {
   console.log(data);
   br1Data = data;
-
 
   //sort bars based on value
       data = data.sort(function (a, b) {
@@ -2931,11 +2738,7 @@ d3.json(bennekeldata_path).then(function(data) {
           //no tick marks
           .tickSize(0)
 
-
-
-
       let xAxis = d3.axisBottom(x);
-
 
       let gy = svg.append("g")
           .attr("class", "yAxis")
@@ -2947,15 +2750,6 @@ d3.json(bennekeldata_path).then(function(data) {
             .style("font-size", "12px")
             .style("color", "#222")
             .attr("transform", "translate(-4,-4)");
-
-
-
-      // let gx = svg.append("g")
-      //     .attr("class", "xAxis")
-      //     .call(xAxis);
-
-          // d3.select(".xAxis")
-          // .attr("transform", "translate(0,480)");
 
       let bars = svg.selectAll(".bar")
           .data(data)
@@ -2990,22 +2784,7 @@ d3.json(bennekeldata_path).then(function(data) {
                 return d.Number;
             });
 
-
         svg.selectAll(".label")
         .style("fill","#5f89ad");
-          // .attr("x", "-10px")
-          // .attr("dy", "2px");
-        // .attr("y", function(d) { return y(d.Reasons) + 1; }).attr('dy', '-0.4em')
-        // //y position of the label is halfway down the bar
-        // .attr("y", function (d) {
-        //     return y(d.Reasons) + y.bandwidth() / 2 + 4;
-        // })
-        // //x position is 3 pixels to the right of the bar
-        // .attr("x", function (d) {
-        //     return x(d.Number) + 3;
-        // });
-
-    // vizmaps('mp4', 'Gray', 'initialize');
-    // loading[6] = 'mp4';
 
 });

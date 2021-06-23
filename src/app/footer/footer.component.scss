@@ -6,8 +6,11 @@
   border-top: 1px solid $dav-navy;
   &_inner {
     @include inner;
-    font-family: 'suisse_intlthin';
+    //font-family: 'suisse_intlthin';
     font-size: 10px;
     line-height: 32px;
+    &_main {
+      font-weight: bold;
+    }
   }
 }

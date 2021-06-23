@@ -20,22 +20,34 @@
             <div class="demography_each">
               <span class="demography_each_title">Total (2020):</span>
               <span class="demography_each_data">
-                <span id="demography-totalpop"></span>
-                <span class="demography_each_data_average">&nbsp;(avg. 2123)</span>
+                  <span id="demography-totalpop" style="font-weight: bold"></span>
+                  <span class="demography_each_data_average" style="font-size:12px">&nbsp;(avg. 2123)</span>
               </span>
             </div>
             <div class="demography_each">
               <span class="demography_each_title">Men (2020):</span>
               <span class="demography_each_data">
-                <span id="demography-men"></span>
-                <span class="demography_each_data_average">&nbsp;(avg. 52%)</span>
+                <span class="demography_each_data_chart">
+                  <span id="demography-men-figure" class="demography_each_data_chart_figure"></span>
+                  <span class="demography_each_data_chart_bg"></span>
+                </span>
+                <span class="demography_each_data_text">
+                  <span id="demography-men" style="font-weight: bold"></span>
+                  <span class="demography_each_data_text_average">&nbsp;(avg. 52%)</span>
+                </span>
               </span>
             </div>
             <div class="demography_each">
               <span class="demography_each_title">Women (2020):</span>
               <span class="demography_each_data">
-                <span id="demography-women"></span>
-                <span class="demography_each_data_average">&nbsp;(avg. 48%)</span>
+                <span class="demography_each_data_chart">
+                  <span id="demography-women-figure" class="demography_each_data_chart_figure"></span>
+                  <span class="demography_each_data_chart_bg"></span>
+                </span>
+                <span class="demography_each_data_text">
+                  <span id="demography-women" style="font-weight: bold"></span>
+                  <span class="demography_each_data_text_average">&nbsp;(avg. 48%)</span>
+                </span>
               </span>
             </div>
           </div>
@@ -54,22 +66,40 @@
           <div class="demography_each">
             <span class="demography_each_title">0-14 (2020):</span>
             <span class="demography_each_data">
-              <span id="demography-age0-14"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 13%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-age0-14-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-age0-14" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 13%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">15-64 (2020):</span>
             <span class="demography_each_data">
-              <span id="demography-age15-64"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 69%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-age15-64-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-age15-64" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 69%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">65 and above (2020):</span>
             <span class="demography_each_data">
-              <span id="demography-age65"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 18%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-age65-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-age65" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 18%)</span>
+              </span>
             </span>
           </div>
         </mat-expansion-panel>
@@ -86,15 +116,27 @@
           <div class="demography_each">
             <span class="demography_each_title">Dutch (2020):</span>
             <span class="demography_each_data">
-              <span id="demography-dutch"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 67%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-dutch-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-dutch" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 67%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">Immigrant (2020):</span>
             <span class="demography_each_data">
-              <span id="demography-immigrants"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 33%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-immigrants-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-immigrants" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 33%)</span>
+              </span>
             </span>
           </div>
         </mat-expansion-panel>
@@ -105,28 +147,40 @@
 
           <mat-expansion-panel-header>
             <mat-panel-title>
-              <span class="panel-title">Household and income</span>
+              <span class="panel-title">Income and household</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="demography_each">
+            <span class="demography_each_title">Average income per person (2019):</span>
+            <span class="demography_each_data">
+              <span id="demography-income" style="font-weight: bold"></span>
+              <span class="demography_each_data_average" style="font-size: 12px">&nbsp;(avg. EUR 35161)</span>
+            </span>
+          </div>
+          <div class="demography_each">
             <span class="demography_each_title">Single household (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-single"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 47%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-single-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-single" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 47%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">Household with kids (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-wKids"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 27%)</span>
-            </span>
-          </div>
-          <div class="demography_each">
-            <span class="demography_each_title">Average income per person (2019):</span>
-            <span class="demography_each_data">
-              <span id="demography-income"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 35161 EUR)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-wKids-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-wKids" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 27%)</span>
+              </span>
             </span>
           </div>
         </mat-expansion-panel>
@@ -144,34 +198,57 @@
           <div class="demography_each">
             <span class="demography_each_title">Foot (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-foot"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 17%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-foot-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-foot" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 17%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">Bicycle (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-bike"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 42%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-bike-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-bike" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 42%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">Auto (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-auto"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 36%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-auto-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-auto" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 36%)</span>
+              </span>
             </span>
           </div>
           <div class="demography_each">
             <span class="demography_each_title">Transit (2019):</span>
             <span class="demography_each_data">
-              <span id="demography-transit"></span>
-              <span class="demography_each_data_average">&nbsp;(avg. 6%)</span>
+              <span class="demography_each_data_chart">
+                <span id="demography-transit-figure" class="demography_each_data_chart_figure"></span>
+                <span class="demography_each_data_chart_bg"></span>
+              </span>
+              <span class="demography_each_data_text">
+                <span id="demography-transit" style="font-weight: bold"></span>
+                <span class="demography_each_data_text_average">&nbsp;(avg. 6%)</span>
+              </span>
             </span>
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-
     </div>
     <small class="demography-note">*avg. shows the average in the neighborhood of Eindhoven</small>
     <small class="demography-note">Source: Eindhoven in Cijfers</small>

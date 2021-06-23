@@ -56,11 +56,40 @@
         display: block;
       }
       &_data {
-        display: block;
+        display: flex;
         margin-top: 6px;
         font-size: 16px;
-        &_average {
-          font-size: 12px;
+        position: relative;
+        &_chart {
+          width: 50%;
+          position: relative;
+          &_bg {
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: #f2f2f2;
+
+          }
+          &_figure {
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            //width: 50%;
+            background:rgb(27,50,141);
+            z-index: 999;
+          }
+        }
+        &_text {
+          width: 50%;
+          padding-left: 8px;
+          &_average {
+            font-size: 12px;
+          }
         }
       }
     }
