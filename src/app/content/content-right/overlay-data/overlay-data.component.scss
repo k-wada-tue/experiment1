@@ -57,7 +57,7 @@
         display: flex;
         align-items: center;
         height: auto;
-        padding:6px 12px;
+        padding:6px 12px 6px 12px;
         box-sizing: border-box;
         width: 100%;
         .title-wrapper {
@@ -103,9 +103,9 @@
         }
       }
       &_description {
-        margin:0 12px;
-        padding: 12px 0;
-        border-top: 1px solid #d8d8d8;
+        // margin:0 12px;
+        //padding-left: 12px;
+        // border-top: 1px solid #d8d8d8;
         // border-bottom: 1px solid #d8d8d8;
         &[aria-hidden="false"] {
           height: auto;
@@ -118,10 +118,11 @@
           font-size: 14px;
         }
         .desc-content {
-          margin-top: 8px;
+          padding-left: 12px;
           font-size: 12px;
           color: #222;
           line-height: 16px;
+          padding-bottom: 12px;
           &_legend {
             margin-top: 10px;
             list-style: none;
@@ -131,7 +132,7 @@
               &_circle {
                 width: 8px;
                 height: 8px;
-                border-radius: 4px;
+                border: 0.5px solid #999;
                 display: inline-block;
                 &.noise_problem {
                   background-color: rgb(253,192,134);
@@ -180,7 +181,7 @@
           width: calc(100% - 166px);
           box-sizing: border-box;
           .info-source {
-            overflow-x: scroll;
+            overflow-x: auto;
             overflow-y: hidden;
             white-space: nowrap;
             -ms-overflow-style: none;  /* IE and Edge */
@@ -346,5 +347,41 @@
 ::ng-deep .mat-select-panel {
   max-height: none !important;
   height: auto !important;
+}
+
+.mat-accordion .mat-expansion-panel:first-of-type {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+}
+.mat-accordion .mat-expansion-panel:last-of-type {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: none;
+}
+
+.mat-expansion-panel-header {
+  padding: 0 12px;
+}
+
+.mat-expansion-panel {
+  background: none;
+  border-bottom: none;
+  //padding: 0 12px;
+}
+
+.mat-expansion-panel-header {
+  height: 36px;
+  //padding-top: 4px;
+}
+
+// ::ng-deep .mat-expansion-panel-body {
+//   padding: 0 12px !important;
+// }
+
+::ng-deep .mat-expansion-indicator::after {
+  margin-top: -6px !important;
 }
 

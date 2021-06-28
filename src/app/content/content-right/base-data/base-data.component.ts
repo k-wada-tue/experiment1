@@ -7,23 +7,76 @@ interface  Dataset {
 }
 
 declare function initializeMap(): any;
-declare function changeAttr(attr): any;
-declare function changeBasemap(value): any;
-declare function tooltiptext(): any;
+// declare function changeAttr(attr): any;
+// declare function changeBasemap(value): any;
+
+declare function bindDataBS(attr, whichbase): any;
+declare function bindDataBB(attr, whichbase): any;
+
 export let baseAttr: any;
 export let baseValue: any;
+
+export let basemapAttr: any;
+export let basemapInfo: any;
+
+export let selectedAttribute: any;
+selectedAttribute = 'm_exercise';
+
+export let baseStatus: any;
+baseStatus = 'buurt';
+
+export let basebuurt_svg: any;
+
+export let basestadsdeel_svg: any;
+
+export let clickedPathActive: any;
+
+// export let basemapAttr: any;
+// export let bindDataBS;
 
 declare let gtag: any;
 
 function trackBasemap(value) {
-    console.log('excuted');
-    console.log(value);
+
     gtag('event', 'click', {
       'event_category': value + '_selected',
       'event_label': 'Basemap',
       //'event_status': 'checkbox_' + checkStatus,
       'value': 0 })
 }
+
+function changeBasemap(value){
+    baseStatus = value;
+    basebuurt_svg = document.getElementById('basemap-buurt');
+    basestadsdeel_svg = document.getElementById('basemap-stadsdeel');
+    if (value == 'stadsdeel'){
+      basebuurt_svg.setAttribute('aria-hidden', 'true');
+      basestadsdeel_svg.setAttribute('aria-hidden', 'false');
+      bindDataBS(selectedAttribute, 'stadsdeel');
+    } else if (value == 'buurt') {
+      basebuurt_svg.setAttribute('aria-hidden', 'false');
+      basestadsdeel_svg.setAttribute('aria-hidden', 'true');
+      bindDataBB(selectedAttribute, 'buurt');
+    } else if (value == 'off') {
+      basebuurt_svg.setAttribute('aria-hidden', 'true');
+      basestadsdeel_svg.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+function changeAttr(newAttr) {
+  selectedAttribute = newAttr;
+  if (baseStatus == 'buurt') {
+    bindDataBB(newAttr, baseStatus);
+    clickedPathActive = false;
+  } else if (baseStatus == 'stadsdeel') {
+    bindDataBS(newAttr, baseStatus);
+  }
+  basemapAttr = document.getElementById('basemap-attr');
+  basemapInfo = document.getElementById('basemap-info');
+  basemapAttr.setAttribute('aria-selected', true);
+  basemapInfo.classList.add('active');
+};
+
 
 function trackBaseAttr(value) {
 

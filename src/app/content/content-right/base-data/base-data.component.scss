@@ -33,11 +33,36 @@ mat-panel-title {
 }
 
 ::ng-deep .mat-expansion-panel-body{
-  padding: 12px 0 0 0 !important;
+  padding: 0px !important;
 }
 
-.boundary-option {
+// .boundary-option {
+//   margin-left: 16px;
+// }
+
+#boundary-option1 {
+  float: left;
+  margin-left: 12px;
+}
+#boundary-option2 {
+  float: left;
   margin-left: 16px;
+}
+
+#boundary-option3 {
+  clear: both;
+  margin-left: 12px;
+  margin-top: 12px;
+  color: #666;
+}
+
+#basemapAttr-container {
+  display: block;
+  margin-top: 12px;
+}
+#basemap-attr {
+  display: inline-block;
+  width: 240px;
 }
 
 ::ng-deep .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {

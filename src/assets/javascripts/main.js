@@ -18,13 +18,13 @@ let interval6;
 let dataArray;
 
 // Basemap data either 'buurt' or 'stadsdeel' *default is buurt
-let baseStatus = 'buurt';
+// let baseStatus = 'buurt';
 
 // Default base attribute on basemap data
 const basedataDefault = 'm_exercise';
 
 // Selected attribute in the basemap data
-let selectedAttribute; //'healthy','m_drinker', 'smoker', 'overweight', 'illness', 'physical_p', 'depression', or 'loneliness'
+//let selectedAttribute; //'healthy','m_drinker', 'smoker', 'overweight', 'illness', 'physical_p', 'depression', or 'loneliness'
 
 // Basemap JSON data
 let baseJson;
@@ -36,9 +36,11 @@ let mapInitialize; //If map was rendered for the first time (true/false)
 let mapLayers;
 
 // SVG map layers
-let basebuurt_svg;
-let basestadsdeel_svg;
+// let basebuurt_svg;
+// let basestadsdeel_svg;
 let bennekel_svg;
+
+let geojson_bs;
 
 let buurt_each;
 
@@ -87,7 +89,7 @@ let tooltipContainerBK;
 //Sidebar
 let sidebarjs;
 let sideContent;
-let clickedPathActive;
+// let clickedPathActive;
 clickedPathActive = false;
 
 //Demographic data DOM
@@ -129,8 +131,10 @@ let clickedPath;
 let copiedPath;
 
 // For coloring info icon next to the basemap attribute selection
-let basemapAttr;
-let basemapInfo;
+// let basemapAttr;
+// let basemapInfo;
+
+let selectedBasemap;
 
 //Benekel information modal
 let pageHinder;
@@ -409,15 +413,16 @@ const apiReq_publicconcerns = fetch(publicconcerns_path).then((response)=> {
 const pushArray = (attribute, whichbase)=> {
   return new Promise((resolve, reject) => {
 
-    selectedAttribute = whichbase;
+    selectedBasemap = whichbase;
+    //console.log(selectedAttribute);
 
-    if (selectedAttribute == 'buurt') {
+    if (selectedBasemap == 'buurt') {
       apiReq_buurt.then((data)=> {
         baseJson = data;
         dataArray = []; //Clear dataArray
         checkAttribute();
       });
-    } else if (selectedAttribute == 'stadsdeel') {
+    } else if (selectedBasemap == 'stadsdeel') {
       apiReq_stadsdeel.then((data)=> {
         baseJson = data;
         dataArray = []; //Clear dataArray
@@ -437,6 +442,7 @@ const pushArray = (attribute, whichbase)=> {
 
     function createArray() {
       let dataLength = baseJson.features.length;
+      console.log(baseJson);
       for (let i = 0; i < dataLength; i++) {
         dataArray.push(baseJson.features[i].properties[selectedAttribute]);
       }
@@ -457,6 +463,7 @@ const legendCalc = (p) => {
     let max = filteredLegend.reduce(aryMax); // => 10
     let min = filteredLegend.reduce(aryMin); // => 1
     let division = Math.round((max - min)/4);
+    //console.log(max);
 
     interval0 = min;
     interval1 = (min + division) - 1;
@@ -2390,6 +2397,8 @@ const vizmaps = ()=> {
               .style('stroke', '#666666') //#bbbbbb
               .style('stroke-width', '.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
+              .attr('class', 'public-concerns')
+              .style('pointer-events', 'auto')
               .style('cursor', 'pointer')
               .style('fill', (d)=>{
                 if (d.properties.onderwerp == 'Noise problem') {
@@ -2412,31 +2421,33 @@ const vizmaps = ()=> {
               .duration(500)
               .style('opacity', '0.7');
 
-            let zoomLev = map.getZoom();
 
-            if (zoomLev <= 11) {
-                feature_pc.attr("d", path.pointRadius(4));
-            } else if (zoomLev == 12) {
-                feature_pc.attr("d", path.pointRadius(5));
-            } else if (zoomLev == 13) {
-                feature_pc.attr("d", path.pointRadius(6));
-            } else if (zoomLev == 14) {
-                feature_pc.attr("d", path.pointRadius(7));
-            } else if (zoomLev == 15) {
-                feature_pc.attr("d", path.pointRadius(8));
-            } else if (zoomLev == 16) {
-                feature_pc.attr("d", path.pointRadius(9));
-            } else if (zoomLev == 17) {
-                feature_pc.attr("d", path.pointRadius(10));
-            } else if (zoomLev == 18) {
-                feature_pc.attr("d", path.pointRadius(11));
-            } else if (zoomLev == 19) {
-                feature_pc.attr("d", path.pointRadius(12));
-            } else {
-              feature_pc.attr("d", path.pointRadius(6));
-            }
 
-            feature_pc.attr('d', path).on("mouseover", handleMouseOver)
+            // let zoomLev = map.getZoom();
+
+            // if (zoomLev <= 11) {
+            //     feature_pc.attr("d", path.pointRadius(4));
+            // } else if (zoomLev == 12) {
+            //     feature_pc.attr("d", path.pointRadius(5));
+            // } else if (zoomLev == 13) {
+            //     feature_pc.attr("d", path.pointRadius(6));
+            // } else if (zoomLev == 14) {
+            //     feature_pc.attr("d", path.pointRadius(7));
+            // } else if (zoomLev == 15) {
+            //     feature_pc.attr("d", path.pointRadius(8));
+            // } else if (zoomLev == 16) {
+            //     feature_pc.attr("d", path.pointRadius(9));
+            // } else if (zoomLev == 17) {
+            //     feature_pc.attr("d", path.pointRadius(10));
+            // } else if (zoomLev == 18) {
+            //     feature_pc.attr("d", path.pointRadius(11));
+            // } else if (zoomLev == 19) {
+            //     feature_pc.attr("d", path.pointRadius(12));
+            // } else {
+            //   feature_pc.attr("d", path.pointRadius(6));
+            // }
+
+          feature_pc.attr('d', path).on("mouseover", handleMouseOver)
               .on("mouseout", handleMouseOut);
 
           function handleMouseOver(d, i) {
@@ -2464,6 +2475,20 @@ const vizmaps = ()=> {
               .duration(200);
           }
 
+
+          function toSquare () {
+            let publicconcerns = document.getElementsByClassName("public-concerns");
+            //console.log(publicconcerns[0]);
+            const pathLength = publicconcerns.length;
+            for (let i = 0; i < pathLength; i++) {
+              //console.log(publicconcerns[i].getAttribute("d"));
+              let square = publicconcerns[i].getAttribute("d").replace('4.5a4.5,4.5 0 1,1 0,-9a4.5,4.5 0 1,1 0,9z', '8,8 0 0,0 0,-8,-8 0 0,0 0,8z');
+              publicconcerns[i].setAttribute("d", square);
+              console.log(publicconcerns[i].getAttribute("d"));
+            }
+          } toSquare();
+
+
           //remove loader
           loader = document.getElementById('loader-bg');
           loader.setAttribute('aria-hidden','true');
@@ -2488,14 +2513,14 @@ const vizmaps = ()=> {
 		  let g_aq = svg_aq.append('g').attr('class', 'leaflet-zoom-hide');
 
       //filters go in defs element
-      let defs = svg_aq.append("defs");
+      // let defs = svg_aq.append("defs");
 
-      let filter = defs.append("filter")
-          .attr("id", "dot-blur");
+      // let filter = defs.append("filter")
+      //     .attr("class", "dot-blur");
 
-      filter.append("feGaussianBlur")
-          .attr("in", "SourceGraphic")
-          .attr("stdDeviation", "10");
+      // filter.append("feGaussianBlur")
+      //     .attr("in", "SourceGraphic")
+      //     .attr("stdDeviation", "10");
 
       airquality_svg = document.getElementById('air-quality');
 
@@ -2529,7 +2554,7 @@ const vizmaps = ()=> {
 
             feature_aq.attr('d', path)
               .style('stroke', '#999') //#bbbbbb
-              .style('stroke-width', '0px')
+              .style('stroke-width', '0.5px')
               .attr('class', 'leaflet-interactive') // Release leaflet's css pointer-event:none
               .style('cursor', 'pointer')
               .style('fill', (d)=> {
@@ -2541,7 +2566,7 @@ const vizmaps = ()=> {
                     return 'rgb(240,240,240)';
                 }
               })
-              .style("filter","url(#dot-blur)")
+              //.style("filter","url(#dot-blur)")
               .style('opacity', '0')
               .transition()
               .duration(500)
@@ -2612,8 +2637,8 @@ const vizmaps = ()=> {
             d3.select(this)
               .transition()
               .style('opacity', 0.8)
-              .style('stroke-width', '0px')
               .style('stroke', '#999') //#bbbbbb
+              .style('stroke-width', '0.5px')
               .duration(200);
           }
 
@@ -2651,40 +2676,41 @@ const vizmaps = ()=> {
 
   }
 
-  changeBasemap = function changeBasemap(value){
-    baseStatus = value;
-    if (value == 'stadsdeel'){
-      basebuurt_svg.setAttribute('aria-hidden', 'true');
-      basestadsdeel_svg.setAttribute('aria-hidden', 'false');
-      bindDataBS(selectedAttribute, 'stadsdeel');
-    } else if (value == 'buurt') {
-      basebuurt_svg.setAttribute('aria-hidden', 'false');
-      basestadsdeel_svg.setAttribute('aria-hidden', 'true');
-      bindDataBB(selectedAttribute, 'buurt');
-    }
-  }
+  // changeBasemap = function changeBasemap(value){
+  //   baseStatus = value;
+  //   if (value == 'stadsdeel'){
+  //     basebuurt_svg.setAttribute('aria-hidden', 'true');
+  //     basestadsdeel_svg.setAttribute('aria-hidden', 'false');
+  //     bindDataBS(selectedAttribute, 'stadsdeel');
+  //   } else if (value == 'buurt') {
+  //     basebuurt_svg.setAttribute('aria-hidden', 'false');
+  //     basestadsdeel_svg.setAttribute('aria-hidden', 'true');
+  //     bindDataBB(selectedAttribute, 'buurt');
+  //   }
+  // }
 
-  changeAttr = function (newAttr) {
-    selectedAttribute = newAttr;
-    if (baseStatus == 'buurt') {
-      bindDataBB(newAttr, baseStatus);
-      clickedPathActive = false;
-    } else if (baseStatus == 'stadsdeel') {
-      bindDataBS(newAttr, baseStatus);
-    }
+  // changeAttr = function (newAttr) {
+  //   selectedAttribute = newAttr;
+  //   if (baseStatus == 'buurt') {
+  //     bindDataBB(newAttr, baseStatus);
+  //     clickedPathActive = false;
+  //   } else if (baseStatus == 'stadsdeel') {
+  //     bindDataBS(newAttr, baseStatus);
+  //   }
 
-    basemapAttr.setAttribute('aria-serected', true);
-    basemapInfo.classList.add('active');
-  };
+  //   basemapAttr.setAttribute('aria-serected', true);
+  //   basemapInfo.classList.add('active');
+  // };
 
   // addOverlay
-  addOverlay = function (status, value) {
-    if (status == true && value != undefined) {
-      document.getElementById(value).setAttribute('aria-hidden', 'false');
-    } else if (status == false && value != undefined) {
-      document.getElementById(value).setAttribute('aria-hidden', 'true');
-    }
-  }
+  // addOverlay = function (status, value) {
+  //   if (status == true && value != undefined) {
+  //     document.getElementById(value).setAttribute('aria-hidden', 'false');
+  //   } else if (status == false && value != undefined) {
+  //     document.getElementById(value).setAttribute('aria-hidden', 'true');
+  //   }
+  // }
+  //Moved to ts file: overlay-data,component.ts
 };
 
 function initializeMap() {
@@ -2695,7 +2721,7 @@ function initializeMap() {
 
 //Bennekel data viz
 d3.json(bennekeldata_path).then(function(data) {
-  console.log(data);
+  //console.log(data);
   br1Data = data;
 
   //sort bars based on value

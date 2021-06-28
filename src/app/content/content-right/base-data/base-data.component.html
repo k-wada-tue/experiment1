@@ -10,19 +10,23 @@
     </mat-expansion-panel-header>
 
     <div class="base-data-content">
-      <mat-radio-group name="bourndary">
-        <mat-radio-button class="boundary-option" value="stadsdeel" (change)="onBasemapChange($event.value)">Districts (Stadsdelen)</mat-radio-button>
-        <mat-radio-button class="boundary-option" value="buurt" checked="true" (change)="onBasemapChange($event.value)">Neighborhoods (Buurten)</mat-radio-button>
+      <mat-radio-group name="boundary">
+        <mat-radio-button class="boundary-option" id="boundary-option1" value="buurt" checked="true" (change)="onBasemapChange($event.value)">Neighborhoods</mat-radio-button>
+        <mat-radio-button class="boundary-option" id="boundary-option2" value="stadsdeel" (change)="onBasemapChange($event.value)">Districts</mat-radio-button>
+        <mat-radio-button class="boundary-option" id="boundary-option3" value="off" (change)="onBasemapChange($event.value)">Off (No Base Boundary Data)</mat-radio-button>
       </mat-radio-group>
-      <mat-form-field appearance="fill" id="basemap-attr" aria-selected="false">
-        <mat-label>Select base vitality data</mat-label>
-        <mat-select (selectionChange)="onAttrChange($event.value)">
-          <mat-option *ngFor="let dataset of datasets" [value]="dataset.value">
-            {{dataset.viewValue}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-icon matTooltip="{{tooltiptext()}}" matTooltipPosition="right" id="basemap-info">info</mat-icon>
+      <div id="basemapAttr-container">
+        <mat-form-field appearance="fill" id="basemap-attr" aria-selected="false">
+          <mat-label>Select base vitality data</mat-label>
+          <mat-select (selectionChange)="onAttrChange($event.value)">
+            <mat-option *ngFor="let dataset of datasets" [value]="dataset.value">
+              {{dataset.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-icon matTooltip="{{tooltiptext()}}" matTooltipPosition="right" id="basemap-info">info</mat-icon>
+      </div>
+
       <!-- <small class="basedata-source">
         Source: RIVM Open data StatLine - Gezondheid per wijk en buurt 2016<br>(19 years and older)
       </small> -->
