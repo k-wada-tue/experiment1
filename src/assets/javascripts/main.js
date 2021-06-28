@@ -54,8 +54,8 @@ let changeBasemap;
 let addOverlay;
 
 //bindData functions for basemap buurt and stadsdeel;
-let bindDataBB;
-let bindDataBS;
+// let bindDataBB;
+// let bindDataBS;
 
 // Tooltip DOM (Basemap)
 let tooltipContainerBM;
@@ -442,7 +442,7 @@ const pushArray = (attribute, whichbase)=> {
 
     function createArray() {
       let dataLength = baseJson.features.length;
-      console.log(baseJson);
+      //console.log(baseJson);
       for (let i = 0; i < dataLength; i++) {
         dataArray.push(baseJson.features[i].properties[selectedAttribute]);
       }
@@ -2484,7 +2484,7 @@ const vizmaps = ()=> {
               //console.log(publicconcerns[i].getAttribute("d"));
               let square = publicconcerns[i].getAttribute("d").replace('4.5a4.5,4.5 0 1,1 0,-9a4.5,4.5 0 1,1 0,9z', '8,8 0 0,0 0,-8,-8 0 0,0 0,8z');
               publicconcerns[i].setAttribute("d", square);
-              console.log(publicconcerns[i].getAttribute("d"));
+              //console.log(publicconcerns[i].getAttribute("d"));
             }
           } toSquare();
 
