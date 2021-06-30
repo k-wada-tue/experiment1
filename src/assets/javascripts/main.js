@@ -195,7 +195,51 @@ window.onload = function(){
     tooltipContainerTR.style.left = xLocation + "px";
     tooltipContainerTR.style.top = yLocation + "px";
 
-  });
+  });//mousemove
+
+
+  // Track click on demography data
+  const demographyPanel = document.getElementsByClassName("demography-panel");
+  //console.log(demographyPanel.length);
+
+
+  for (let i = 0; i < demographyPanel.length; i++) {
+    demographyPanel[i].addEventListener('click', (e)=> {
+      //console.log(demographyPanel[i]);
+      let expandStatus = demographyPanel[i].getAttribute("aria-expanded");
+      let demographyValue = demographyPanel[i].getAttribute("value");
+      // console.log(expandStatus);
+      // console.log(demographyValue);
+      if (expandStatus == "true") {
+        gtag('event', 'demography panel open', {
+        'event_category': demographyValue + '_opened',
+        'event_label': 'Demography data',
+        'value': 0 })
+        //console.log(demographyValue);
+      }
+    });
+  }
+
+  // Track click on overlay description
+  const overlayDescription = document.getElementsByClassName("overlay-description");
+  console.log(overlayDescription.length);
+
+  for (let i = 0; i < overlayDescription.length; i++) {
+    overlayDescription[i].addEventListener('click', (e)=> {
+      //console.log(demographyPanel[i]);
+      let expandStatus = overlayDescription[i].getAttribute("aria-expanded");
+      let descriptionValue = overlayDescription[i].getAttribute("value");
+      // console.log(expandStatus);
+      // console.log(demographyValue);
+      if (expandStatus == "true") {
+        gtag('event', 'description open', {
+        'event_category': descriptionValue + '_opened',
+        'event_label': 'Description',
+        'value': 0 })
+         //console.log(descriptionValue);
+      }
+    });
+  }
 
   // Create sidebarjs instance
   sidebarjs = new SidebarJS.SidebarElement({
@@ -547,6 +591,32 @@ const vizmaps = ()=> {
 
   L.esri.basemapLayer('Gray').addTo(map); //default basemap
   L.control.layers(baseLayers).addTo(map); //basemap options
+
+  //console.log(L.control.getLayer(baseLayers));
+
+  map.on('baselayerchange', function (e) {
+    let currentLayerID = e.layer._leaflet_id;
+    //console.log(currentLayerID);
+    if (currentLayerID == 44) {
+      gtag('event', 'switch base layer', {
+        'event_category': 'basegray_selected',
+        'event_label': 'Baseayers',
+        'value': 0 })
+        //console.log('basegray_selected');
+    } else if (currentLayerID == 46) {
+      gtag('event', 'switch base layer', {
+        'event_category': 'basestreet_selected',
+        'event_label': 'Baselayers',
+        'value': 0 })
+        //console.log('basestreet_selected');
+    } else if (currentLayerID == 47) {
+      gtag('event', 'switch base layer', {
+        'event_category': 'baseimagery_selected',
+        'event_label': 'Baselayers',
+        'value': 0 })
+        //console.log('baseimagery_selected');
+    }
+  });
 
   mapLayers = {
 
