@@ -101,7 +101,7 @@ export class BaseDataComponent implements OnInit{
     {value: 'm_exercise', viewValue: 'Moderate Exercise'},
     {value: 'healthy', viewValue: 'Healthy'},
     {value: 'm_drinker', viewValue: 'Drinker'},
-    {value: 'smoker', viewValue: 'Smorker'},
+    {value: 'smoker', viewValue: 'Smoker'},
     {value: 'overweight', viewValue: 'Overweight'},
     {value: 'illness', viewValue: 'Illness'},
     {value: 'physical_p', viewValue: 'Physical Unavailability'},
